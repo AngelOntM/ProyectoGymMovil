@@ -9,4 +9,7 @@ import retrofit2.http.POST;
 public interface ApiService {
     @POST("login/user")
     Call<AuthModel.LoginResponse> login(@Body AuthModel.LoginRequest loginRequest);
+
+    @POST("verify-2fa")
+    Call<AuthModel.VerifyCodeResponse> verifyCode(@Body AuthModel.VerifyCodeRequest verifyCodeRequest);
 }

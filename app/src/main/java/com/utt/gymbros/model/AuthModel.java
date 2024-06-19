@@ -35,6 +35,40 @@ public class AuthModel {
         }
     }
 
+    public static class VerifyCodeRequest {
+        @SerializedName("email")
+        private String email;
+        @SerializedName("two_factor_code")
+        private Integer code;
+
+        public VerifyCodeRequest(String email, Integer code) {
+            this.email = email;
+            this.code = code;
+        }
+    }
+
+    public static class VerifyCodeResponse {
+        @SerializedName("message")
+        private String message;
+        @SerializedName("token")
+        private String token;
+
+        @SerializedName("user")
+        private User user;
+
+        public String getMessage() {
+            return message == null ? "" : message;
+        }
+
+        public String getToken() {
+            return token == null ? "" : token;
+        }
+
+        public User getUser() {
+            return user;
+        }
+    }
+
     public static class User{
         @SerializedName("id")
         private int id;
@@ -50,6 +84,8 @@ public class AuthModel {
         private String date_of_birth;
         @SerializedName("rol_id")
         private int rol_id;
+        @SerializedName("two_factor_code")
+        private String two_factor_code;
         @SerializedName("created_at")
         private String created_at;
         @SerializedName("updated_at")
@@ -64,6 +100,7 @@ public class AuthModel {
         public String getAddress(){return address == null ? "" : address;}
         public String getDate_of_birth(){return date_of_birth == null ? "" : date_of_birth;}
         public int getRol_id(){return rol_id;}
+        public String getTwo_factor_code(){return two_factor_code == null ? "" : two_factor_code;}
         public String getCreated_at(){return created_at == null ? "" : created_at;}
         public String getUpdated_at(){return updated_at == null ? "" : updated_at;}
         public Rol getRol(){return rol;}
@@ -78,7 +115,7 @@ public class AuthModel {
 
         public int getId(){return id;}
 
-        public String getRol_name(){return rol_name == null ? "" : rol_name;}
+        public String getRole(){return rol_name == null ? "" : rol_name;}
     }
 }
 

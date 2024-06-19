@@ -1,10 +1,17 @@
 package com.utt.gymbros;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.text.InputFilter;
+import android.text.InputType;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -60,7 +67,9 @@ public class MainActivity extends AppCompatActivity {
 
         //Si ya hay un token guardado, redirigir a la siguiente pantalla
         if (!token.isEmpty()) {
-            Toast.makeText(MainActivity.this, token, Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+            startActivity(intent);
+            finish();
         }
 
         btnLogin.setOnClickListener(v -> {
@@ -95,96 +104,205 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void login(String email, String password)
-    {
+    private void login(String email, String password) {
         Button btnLogin = findViewById(R.id.btnLogin);
         btnLogin.setEnabled(false);
 
-        //Validar que los campos no estén vacíos
+        // Validación de campos vacíos
         if (email.isEmpty() || password.isEmpty()) {
-            Snackbar.make(findViewById(android.R.id.content), "Por favor, llena todos los campos", Snackbar.LENGTH_SHORT).show();
+            showSnackbar("Por favor, llena todos los campos");
             btnLogin.setEnabled(true);
             return;
         }
 
-        //Validar que el correo tenga un formato válido
+        // Validación de formato de correo
         if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            Snackbar.make(findViewById(android.R.id.content), "Por favor, ingresa un correo válido", Snackbar.LENGTH_SHORT).show();
+            showSnackbar("Por favor, ingresa un correo válido");
             btnLogin.setEnabled(true);
             return;
         }
 
         AuthModel.LoginRequest loginRequest = new AuthModel.LoginRequest(email, password);
 
-        Retrofit retrofit = ApiClient.getInstance();
-        ApiService apiService = retrofit.create(ApiService.class);
+        ApiService apiService = ApiClient.getInstance().create(ApiService.class);
 
         apiService.login(loginRequest).enqueue(new Callback<AuthModel.LoginResponse>() {
             @Override
             public void onResponse(Call<AuthModel.LoginResponse> call, retrofit2.Response<AuthModel.LoginResponse> response) {
                 if (response.isSuccessful()) {
                     AuthModel.LoginResponse loginResponse = response.body();
+                    String role = String.valueOf(loginResponse.getUser().getRol().getRole());
                     String token = loginResponse.getToken();
                     String message = loginResponse.getMessage();
-                    String name = loginResponse.getUser().getName();
+                    String email = loginResponse.getUser().getEmail();
 
-                    if(message.equals("Usuario no autorizado")) {
-                        Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
+                    if (role.equals("Admin")) {
+                        showVerificationCodeDialog(email);
                         btnLogin.setEnabled(true);
-                        return;
-                    }
-                    if (token.isEmpty()) {
-                        Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
+                    } else if (message.equals("Usuario no autorizado") || token.isEmpty()) {
+                        showSnackbar("Usuario no autorizado");
                         btnLogin.setEnabled(true);
-                        return;
+                    } else {
+                        saveToken(token);
+                        saveDataUser(loginResponse.getUser().getName(), email, role);
                     }
-                    try {
-                        SharedPreferences sharedPrefs = EncryptedSharedPreferences.create(
-                                "userData",                                    // Nombre del archivo de preferencias
-                                MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC),  // Clave de cifrado
-                                getApplicationContext(),
-                                EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-                                EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-                        );
-                        SharedPreferences.Editor editor = sharedPrefs.edit();
-                        editor.putString("auth_token", token);
-                        editor.apply();
-                    } catch (GeneralSecurityException | IOException e) {
-                        // Manejar errores de seguridad o de E/S
-                        e.printStackTrace();
-                        Toast.makeText(MainActivity.this, "Error al guardar el token", Toast.LENGTH_SHORT).show();
-                    }
-
-                    MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(MainActivity.this);
-                    builder.setTitle("Bienvenido");
-                    builder.setMessage("Hola, " + name);
-                    //evitar salir del dialogo al presionar el botón
-                    builder.setCancelable(false);
-                    builder.show();
-
-                    //cerrar dialogo después de 2 segundos
-                    new android.os.Handler().postDelayed(
-                            () -> {
-                                Intent intent = new Intent(MainActivity.this, HomeActivity.class);
-                                startActivity(intent);
-                                finish();
-                            },
-                            2000
-                    );
-
-                }
-                else {
-                    Snackbar.make(findViewById(android.R.id.content), "Verifica tus credenciales", Snackbar.LENGTH_SHORT).show();
+                } else {
+                    showSnackbar("Verifica tus credenciales");
                     btnLogin.setEnabled(true);
                 }
             }
+
             @Override
             public void onFailure(Call<AuthModel.LoginResponse> call, Throwable t) {
                 Toast.makeText(MainActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
-                System.out.println(t.getMessage());
+                System.err.println(t.getMessage()); // Usar System.err para errores
                 btnLogin.setEnabled(true);
             }
         });
     }
 
+    // Métodos auxiliares para mejorar la organización
+    private void showSnackbar(String message) {
+        Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_SHORT).show();
+    }
+
+    private void showVerificationCodeDialog(String email) {
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(MainActivity.this);
+        builder.setTitle("Código de verificación");
+        builder.setMessage("Ingresa el código de verificación enviado a tu correo electrónico");
+        // Diseño del EditText para el código
+        LinearLayout layout = new LinearLayout(MainActivity.this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        EditText input = new EditText(MainActivity.this);
+        input.setHint("Código de verificación");
+        input.setTextAlignment(EditText.TEXT_ALIGNMENT_CENTER);
+        input.setInputType(InputType.TYPE_CLASS_NUMBER);
+        input.setFilters(new InputFilter[]{new InputFilter.LengthFilter(6)});
+        layout.addView(input);
+
+        // TextView para mostrar el tiempo restante
+        TextView timeRemainingTextView = new TextView(MainActivity.this);
+        timeRemainingTextView.setText("Tiempo restante: 10:00"); // Tiempo inicial
+        layout.addView(timeRemainingTextView);
+
+        builder.setView(layout);
+        builder.setCancelable(false);
+
+        // Contador de tiempo
+        final long[] timeRemaining = {10 * 60 * 1000}; // 10 minutos en milisegundos
+        final Handler handler = new Handler();
+        final Runnable runnable = new Runnable() {
+            @SuppressLint({"DefaultLocale", "SetTextI18n"})
+            @Override
+            public void run() {
+                if (timeRemaining[0] > 0) {
+                    timeRemaining[0] -= 1000; // Restar 1 segundo
+                    long minutes = timeRemaining[0] / (60 * 1000);
+                    long seconds = (timeRemaining[0] % (60 * 1000)) / 1000;
+                    timeRemainingTextView.setText(String.format("Tiempo restante: %02d:%02d", minutes, seconds));
+                    handler.postDelayed(this, 1000); // Volver a ejecutar en 1 segundo
+                } else {
+                    timeRemainingTextView.setText("El código ha caducado");
+                    // Aquí puedes agregar lógica para deshabilitar el botón "Verificar" o cerrar el diálogo
+                }
+            }
+        };
+        handler.postDelayed(runnable, 1000); // Iniciar el contador
+
+        builder.setPositiveButton("Verificar", (dialog, which) -> {
+            String verificationCode = input.getText().toString();
+
+            //Si el codigo de verificacion esta vacio mostrar un mensaje pero no cerrar el dialogo
+            if (verificationCode.isEmpty()) {
+                Snackbar.make(findViewById(android.R.id.content), "Por favor, ingresa el código de verificación", Snackbar.LENGTH_SHORT).show();
+                return;
+            }
+
+            //Si el codigo de verificacion no tiene 6 digitos mostrar un mensaje pero no cerrar el dialogo
+            if (verificationCode.length() != 6) {
+                Snackbar.make(findViewById(android.R.id.content), "El código de verificación debe tener 6 dígitos", Snackbar.LENGTH_SHORT).show();
+                return;
+            }
+
+            //Peticion a la API para verificar el codigo
+            AuthModel.VerifyCodeRequest verifyCodeRequest = new AuthModel.VerifyCodeRequest(email, Integer.parseInt(verificationCode));
+            ApiService apiService = ApiClient.getInstance().create(ApiService.class);
+            apiService.verifyCode(verifyCodeRequest).enqueue(new Callback<AuthModel.VerifyCodeResponse>() {
+                @Override
+                public void onResponse(Call<AuthModel.VerifyCodeResponse> call, Response<AuthModel.VerifyCodeResponse> response) {
+                    if (response.isSuccessful()) {
+                        //parar el contador al verificar el codigo
+                        handler.removeCallbacks(runnable);
+                        AuthModel.VerifyCodeResponse verifyCodeResponse = response.body();
+                        String message = verifyCodeResponse.getMessage();
+                        String token = verifyCodeResponse.getToken();
+                        String user = verifyCodeResponse.getUser().getName();
+                        if (message.equals("User logged in successfully")) {
+                            Snackbar.make(findViewById(android.R.id.content), "Bienvenido " + user, Snackbar.LENGTH_SHORT).show();
+                            saveToken(token);
+                            saveDataUser(user, email, "Admin");
+                        }
+                    } else {
+                        showSnackbar("Codigo incorrecto");
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<AuthModel.VerifyCodeResponse> call, Throwable t) {
+                    Snackbar.make(findViewById(android.R.id.content), "Error al verificar el código", Snackbar.LENGTH_SHORT).show();
+                    System.err.println(t.getMessage());
+                }
+            });
+        });
+        builder.setNegativeButton("Cancelar", (dialog, which) -> {
+            handler.removeCallbacks(runnable); // Detener el contador al cancelar
+            dialog.cancel();
+        });
+        builder.show();
+    }
+
+
+    private void saveToken(String token) {
+        SharedPreferences sharedPreferences = null;
+        try {
+            sharedPreferences = EncryptedSharedPreferences.create(
+                    "userData",
+                    MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC),
+                    getApplicationContext(),
+                    EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                    EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+            );
+        } catch (GeneralSecurityException | IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("auth_token", token);
+        editor.apply();
+
+        Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    private void saveDataUser(String name, String email, String role){
+        SharedPreferences sharedPreferences = null;
+        try {
+            sharedPreferences = EncryptedSharedPreferences.create(
+                    "userData",
+                    MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC),
+                    getApplicationContext(),
+                    EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                    EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+            );
+        } catch (GeneralSecurityException | IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("name", name);
+        editor.putString("email", email);
+        editor.putString("role", role);
+        editor.apply();
+    }
 }
