@@ -2,7 +2,6 @@ package com.utt.gymbros;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,14 +14,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.security.crypto.EncryptedSharedPreferences;
 import androidx.security.crypto.MasterKeys;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
 import com.google.android.material.snackbar.Snackbar;
 import com.utt.gymbros.api.ApiClient;
 import com.utt.gymbros.api.ApiService;
@@ -30,6 +28,7 @@ import com.utt.gymbros.model.AuthModel;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.concurrent.atomic.AtomicReference;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -38,6 +37,8 @@ import retrofit2.Retrofit;
 
 public class MainActivity extends AppCompatActivity {
 
+    AlertDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Button btnLogin = findViewById(R.id.btnLogin);
-        Button btnContraseñaOlvidada = findViewById(R.id.btnContraseñaOlvidada);
+        Button btnContrasenaOlvidada = findViewById(R.id.btnContrasenaOlvidada);
         EditText etCorreo = findViewById(R.id.etCorreo);
         EditText etContrasena = findViewById(R.id.etContrasena);
 
@@ -64,19 +65,25 @@ public class MainActivity extends AppCompatActivity {
         }
 
         String token = sharedPreferences.getString("auth_token", "");
+        String role = sharedPreferences.getString("role", "");
 
-        //Si ya hay un token guardado, redirigir a la siguiente pantalla
-        if (!token.isEmpty()) {
+        //Si ya hay un token guardado, redirigir a la pantalla correspondiente
+        if (!token.isEmpty() && role.equals("Admin")) {
+            Intent intent = new Intent(MainActivity.this, AdminActivity.class);
+            startActivity(intent);
+            finish();
+        } else if (!token.isEmpty() && role.equals("Cliente")) {
             Intent intent = new Intent(MainActivity.this, HomeActivity.class);
             startActivity(intent);
             finish();
         }
 
+
         btnLogin.setOnClickListener(v -> {
             login(etCorreo.getText().toString(), etContrasena.getText().toString());
         });
 
-        btnContraseñaOlvidada.setOnClickListener(v -> {
+        btnContrasenaOlvidada.setOnClickListener(v -> {
             MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(MainActivity.this);
             builder.setTitle("Recuperar contraseña");
             builder.setMessage("Ingresa tu correo electrónico para recuperar tu contraseña");
@@ -108,10 +115,18 @@ public class MainActivity extends AppCompatActivity {
         Button btnLogin = findViewById(R.id.btnLogin);
         btnLogin.setEnabled(false);
 
+        progressDialog = new MaterialAlertDialogBuilder(MainActivity.this)
+                .setView(R.layout.progress_dialog)
+                .setCancelable(false)
+                .create();
+
+        progressDialog.show();
+
         // Validación de campos vacíos
         if (email.isEmpty() || password.isEmpty()) {
             showSnackbar("Por favor, llena todos los campos");
             btnLogin.setEnabled(true);
+            runOnUiThread(progressDialog::dismiss);
             return;
         }
 
@@ -119,6 +134,7 @@ public class MainActivity extends AppCompatActivity {
         if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             showSnackbar("Por favor, ingresa un correo válido");
             btnLogin.setEnabled(true);
+            runOnUiThread(progressDialog::dismiss);
             return;
         }
 
@@ -142,13 +158,17 @@ public class MainActivity extends AppCompatActivity {
                     } else if (message.equals("Usuario no autorizado") || token.isEmpty()) {
                         showSnackbar("Usuario no autorizado");
                         btnLogin.setEnabled(true);
+                        runOnUiThread(progressDialog::dismiss);
                     } else {
                         saveToken(token);
                         saveDataUser(loginResponse.getUser().getName(), email, role);
+                        btnLogin.setEnabled(true);
+                        runOnUiThread(progressDialog::dismiss);
                     }
                 } else {
                     showSnackbar("Verifica tus credenciales");
                     btnLogin.setEnabled(true);
+                    runOnUiThread(progressDialog::dismiss);
                 }
             }
 
@@ -157,19 +177,16 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
                 System.err.println(t.getMessage()); // Usar System.err para errores
                 btnLogin.setEnabled(true);
+                runOnUiThread(progressDialog::dismiss);
             }
         });
     }
-
-    // Métodos auxiliares para mejorar la organización
-    private void showSnackbar(String message) {
-        Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_SHORT).show();
-    }
-
     private void showVerificationCodeDialog(String email) {
+        runOnUiThread(progressDialog::dismiss);
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(MainActivity.this);
         builder.setTitle("Código de verificación");
         builder.setMessage("Ingresa el código de verificación enviado a tu correo electrónico");
+
         // Diseño del EditText para el código
         LinearLayout layout = new LinearLayout(MainActivity.this);
         layout.setOrientation(LinearLayout.VERTICAL);
@@ -191,6 +208,9 @@ public class MainActivity extends AppCompatActivity {
         // Contador de tiempo
         final long[] timeRemaining = {10 * 60 * 1000}; // 10 minutos en milisegundos
         final Handler handler = new Handler();
+
+        AtomicReference<AlertDialog> dialogRef = new AtomicReference<>();
+
         final Runnable runnable = new Runnable() {
             @SuppressLint({"DefaultLocale", "SetTextI18n"})
             @Override
@@ -203,24 +223,45 @@ public class MainActivity extends AppCompatActivity {
                     handler.postDelayed(this, 1000); // Volver a ejecutar en 1 segundo
                 } else {
                     timeRemainingTextView.setText("El código ha caducado");
-                    // Aquí puedes agregar lógica para deshabilitar el botón "Verificar" o cerrar el diálogo
+                    // Desactivar el botón "Verificar"
+                    AlertDialog dialog = dialogRef.get();
+                    if (dialog != null) {
+                        Button verifyButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                        if (verifyButton != null) {
+                            verifyButton.setEnabled(false);
+                        }
+                    }
                 }
             }
         };
         handler.postDelayed(runnable, 1000); // Iniciar el contador
 
-        builder.setPositiveButton("Verificar", (dialog, which) -> {
+        builder.setPositiveButton("Verificar", null); // Proveer el botón "Verificar"
+        builder.setNegativeButton("Cancelar", (dialog, which) -> {
+            handler.removeCallbacks(runnable); // Detener el contador al cancelar
+            dialog.cancel();
+        });
+
+        // Crear el diálogo
+        AlertDialog dialog = builder.create();
+        dialogRef.set(dialog);
+        dialog.show();
+
+        // Configurar el botón "Verificar" después de mostrar el diálogo
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
             String verificationCode = input.getText().toString();
 
             //Si el codigo de verificacion esta vacio mostrar un mensaje pero no cerrar el dialogo
             if (verificationCode.isEmpty()) {
                 Snackbar.make(findViewById(android.R.id.content), "Por favor, ingresa el código de verificación", Snackbar.LENGTH_SHORT).show();
+                runOnUiThread(progressDialog::dismiss);
                 return;
             }
 
             //Si el codigo de verificacion no tiene 6 digitos mostrar un mensaje pero no cerrar el dialogo
             if (verificationCode.length() != 6) {
                 Snackbar.make(findViewById(android.R.id.content), "El código de verificación debe tener 6 dígitos", Snackbar.LENGTH_SHORT).show();
+                runOnUiThread(progressDialog::dismiss);
                 return;
             }
 
@@ -238,9 +279,11 @@ public class MainActivity extends AppCompatActivity {
                         String token = verifyCodeResponse.getToken();
                         String user = verifyCodeResponse.getUser().getName();
                         if (message.equals("User logged in successfully")) {
-                            Snackbar.make(findViewById(android.R.id.content), "Bienvenido " + user, Snackbar.LENGTH_SHORT).show();
                             saveToken(token);
                             saveDataUser(user, email, "Admin");
+                            dialog.dismiss();
+                        } else {
+                            showSnackbar("Codigo incorrecto");
                         }
                     } else {
                         showSnackbar("Codigo incorrecto");
@@ -254,14 +297,14 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         });
-        builder.setNegativeButton("Cancelar", (dialog, which) -> {
-            handler.removeCallbacks(runnable); // Detener el contador al cancelar
-            dialog.cancel();
-        });
-        builder.show();
     }
 
 
+
+    // Métodos auxiliares para mejorar la organización
+    private void showSnackbar(String message) {
+        Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_SHORT).show();
+    }
     private void saveToken(String token) {
         SharedPreferences sharedPreferences = null;
         try {
@@ -279,10 +322,6 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("auth_token", token);
         editor.apply();
-
-        Intent intent = new Intent(MainActivity.this, HomeActivity.class);
-        startActivity(intent);
-        finish();
     }
 
     private void saveDataUser(String name, String email, String role){
@@ -304,5 +343,15 @@ public class MainActivity extends AppCompatActivity {
         editor.putString("email", email);
         editor.putString("role", role);
         editor.apply();
+
+        if (role.equals("Admin")) {
+            Intent intent = new Intent(MainActivity.this, AdminActivity.class);
+            startActivity(intent);
+            finish();
+        } else {
+            Intent intent = new Intent(MainActivity.this, AdminActivity.class);
+            startActivity(intent);
+            finish();
+        }
     }
 }
