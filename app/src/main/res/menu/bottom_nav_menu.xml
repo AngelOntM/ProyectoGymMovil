@@ -1,17 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/navigation_home"
-        android:icon="@drawable/baseline_home_24"
-        android:title="Inicio" />
-
+        android:id="@+id/item_1"
+        android:enabled="true"
+        android:icon="@drawable/dashboard_icon"
+        android:title="Inicio"/>
     <item
-        android:id="@+id/navigation_dashboard"
-        android:icon="@drawable/baseline_space_dashboard_24"
-        android:title="Dashboards" />
-
-    <item
-        android:id="@+id/navigation_notifications"
-        android:icon="@drawable/baseline_notifications_24"
-        android:title="Notificaciones" />
+        android:id="@+id/item_2"
+        android:enabled="true"
+        android:icon="@drawable/group_icon"
+        android:title="Rutinas"/>
 </menu>

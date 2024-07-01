@@ -2,6 +2,8 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="white_light">#D2D2D2</color>
     <color name="lavanda">#8692f7</color>
-    <color name="black_light">#232323</color>
+    <color name="black_light">#363740</color>
+    <color name="black_dark">#1f1f1f</color>
 </resources>
