@@ -11,11 +11,8 @@ public class ApiClient {
 
     public static Retrofit getInstance() {
         if (retrofit == null) {
-            // Create OkHttpClient with no timeouts
-            OkHttpClient okHttpClient = new OkHttpClient().newBuilder()
-                    .connectTimeout(0, TimeUnit.MILLISECONDS)
-                    .readTimeout(0, TimeUnit.MILLISECONDS)
-                    .writeTimeout(0, TimeUnit.MILLISECONDS)
+            // Create OkHttpClient with default timeouts
+            OkHttpClient okHttpClient = new OkHttpClient.Builder()
                     .build();
 
             // Build Retrofit instance with the custom OkHttpClient

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android">
+
     <item
         android:id="@+id/nav_dashboard_admin"
         android:enabled="true"
@@ -15,10 +16,10 @@
         tools:ignore="HardcodedText" />
 
     <item
-        android:id="@+id/nav_memberships_admin"
+        android:id="@+id/nav_management_admin"
         android:enabled="true"
-        android:icon="@drawable/membership_icon"
-        android:title="Membresias"
+        android:icon="@drawable/assignment_icon"
+        android:title="Gestion"
         tools:ignore="HardcodedText" />
 
     <item

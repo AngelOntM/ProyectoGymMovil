@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/edit_membership_admin_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -21,7 +22,7 @@
             android:id="@+id/productNameEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Nombre de la membresia" />
+            android:hint="Nombre de la membresía" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -33,7 +34,7 @@
             android:id="@+id/descriptionEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Descripcion" />
+            android:hint="Descripción" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -47,6 +48,45 @@
             android:layout_height="wrap_content"
             android:hint="Precio"
             android:inputType="numberDecimal" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/discountEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Descuento"
+            android:inputType="numberDecimal" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/durationDaysEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Duración en días"
+            android:inputType="number" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/sizeEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Tamaño"
+            android:inputType="number" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <LinearLayout
@@ -70,5 +110,12 @@
             android:text="Guardar"
             style="@style/Widget.Material3.Button.ElevatedButton" />
     </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone" />
 
 </LinearLayout>

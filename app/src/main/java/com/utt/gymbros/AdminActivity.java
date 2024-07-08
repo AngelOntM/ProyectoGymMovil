@@ -1,12 +1,9 @@
 package com.utt.gymbros;
 
-import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.MenuItem;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -56,7 +53,7 @@ public class AdminActivity extends AppCompatActivity {
         enum MenuItemId{
             DASHBOARD_ADMIN(R.id.nav_dashboard_admin),
             USERS_ADMIN(R.id.nav_users_admin),
-            MEMBERSHIPS_ADMIN(R.id.nav_memberships_admin),
+            MANAGEMENT_ADMIN(R.id.nav_management_admin),
             ACCOUNT_ADMIN(R.id.nav_account_admin);
 
             private final int id;
@@ -93,7 +90,7 @@ public class AdminActivity extends AppCompatActivity {
             fragment = switch (selectedId) {
                 case DASHBOARD_ADMIN -> new DashboardAdminFragment();
                 case USERS_ADMIN -> new UsersAdminFragment();
-                case MEMBERSHIPS_ADMIN ->  MembershipsAdminFragment.newInstance(token);
+                case MANAGEMENT_ADMIN ->  ManagementAdminFragment.newInstance(token);
                 case ACCOUNT_ADMIN -> new AccountAdminFragment();
             };
             getSupportFragmentManager().beginTransaction()

@@ -3,16 +3,18 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_memberships_admin"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:context=".MembershipsAdminFragment">
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline"
+        android:id="@+id/guideline_top"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.1" /> <!-- Adjust this percentage to allocate space for the button -->
+        app:layout_constraintGuide_percent="0.1" />
 
     <Button
         android:id="@+id/btn_add_membership"
@@ -28,9 +30,16 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/guideline"
+        app:layout_constraintBottom_toTopOf="@id/guideline_top"
         app:strokeColor="@color/white"
         app:strokeWidth="2dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.9" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_memberships"
@@ -40,8 +49,31 @@
         android:clipToPadding="false"
         android:scrollbars="vertical"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintTop_toBottomOf="@id/guideline"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/guideline_top"
+        app:layout_constraintBottom_toTopOf="@id/guideline_bottom"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_no_data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        app:cardBackgroundColor="@android:color/white"
+        app:cardElevation="4dp"
+        app:cardCornerRadius="8dp"
+        tools:ignore="MissingConstraints">
+
+        <TextView
+            android:id="@+id/text_no_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="No hay membresías disponibles"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            android:textAlignment="center" />
+    </androidx.cardview.widget.CardView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
