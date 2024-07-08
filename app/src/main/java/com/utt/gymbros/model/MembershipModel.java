@@ -134,7 +134,5 @@ public class MembershipModel {
             this.duration_days = duration_days;
             this.size = size;
         }
-
-        // Getters y setters...
     }
 }

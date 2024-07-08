@@ -2,6 +2,7 @@ package com.utt.gymbros.api;
 
 import com.utt.gymbros.model.AuthModel;
 import com.utt.gymbros.model.MembershipModel;
+import com.utt.gymbros.model.OrderModel;
 
 
 import java.util.List;
@@ -16,15 +17,16 @@ import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
 public interface ApiService {
-    // Autenticación
+    // region Autenticación
     @POST("login/user")
     Call<AuthModel.LoginResponse> login(@Body AuthModel.LoginRequest loginRequest);
 
     @POST("verify-2fa")
     Call<AuthModel.VerifyCodeResponse> verifyCode(@Body AuthModel.VerifyCodeRequest verifyCodeRequest);
 
+    // endregion
 
-    ////////////// Membresias //////////////
+    // region Membresias
     //Crear una membresia
     @POST("membresias")
     Call<Void> createMembership(@Body MembershipModel.CreateMembershipRequest request, @Header("Authorization") String token);
@@ -54,5 +56,16 @@ public interface ApiService {
             @Path("id") int membershipId,
             @Header("Authorization") String authToken
     );
+    // endregion
+
+    // region Órdenes
+    // Obtener todas las órdenes
+    @GET("orders")
+    Call<List<OrderModel.Order>> getAllOrders(@Header("Authorization") String authToken);
+
+    // Cancelar una orden
+    @DELETE("orders/{id}")
+    Call<Void> cancelOrder(@Path("id") int orderId, @Header("Authorization") String authToken);
+    // endregion
 }
 

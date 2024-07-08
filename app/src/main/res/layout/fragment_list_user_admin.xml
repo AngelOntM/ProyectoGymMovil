@@ -4,7 +4,7 @@
     android:id="@+id/fragment_list_user_admin"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/material_dynamic_primary80"
+    android:background="#76d1ff "
     tools:context=".ListUserAdminFragment">
 
     <!-- TODO: Update blank fragment layout -->

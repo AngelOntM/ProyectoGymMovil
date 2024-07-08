@@ -20,7 +20,7 @@ public class ViewPagerAdapterManagementAdmin extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         switch (position) {
             case 0:
-                return new OrdersAdminFragment();
+                return OrdersAdminFragment.newInstance(token);
             case 1:
                 return new ProductsAdminFragment();
             case 2:
