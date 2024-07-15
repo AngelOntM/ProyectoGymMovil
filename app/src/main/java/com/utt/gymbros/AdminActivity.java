@@ -89,7 +89,7 @@ public class AdminActivity extends AppCompatActivity {
             }
             fragment = switch (selectedId) {
                 case DASHBOARD_ADMIN -> new DashboardAdminFragment();
-                case USERS_ADMIN -> new UsersAdminFragment();
+                case USERS_ADMIN ->  UsersAdminFragment.newInstance(token);
                 case MANAGEMENT_ADMIN ->  ManagementAdminFragment.newInstance(token);
                 case ACCOUNT_ADMIN -> new AccountAdminFragment();
             };

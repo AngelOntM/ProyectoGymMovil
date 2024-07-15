@@ -11,6 +11,7 @@ import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDialogFragment;
+import androidx.core.app.ActivityCompat;
 import androidx.security.crypto.EncryptedSharedPreferences;
 import androidx.security.crypto.MasterKeys;
 
@@ -91,7 +92,7 @@ public class FullscreenDialogEditMembership extends AppCompatDialogFragment {
                 membership.setSize(size);
 
                 // Agregar el campo de imagen y activo
-                membership.setProductImagePath(membership.getProductImagePath());
+                membership.setProductImagePath(null);
                 membership.setActive(membership.getActive());
                 // Hacer la petición para actualizar la membresía
                 updateMembership(membership, dialogView);

@@ -3,6 +3,7 @@ package com.utt.gymbros.api;
 import com.utt.gymbros.model.AuthModel;
 import com.utt.gymbros.model.MembershipModel;
 import com.utt.gymbros.model.OrderModel;
+import com.utt.gymbros.model.VisitUserModel;
 
 
 import java.util.List;
@@ -66,6 +67,13 @@ public interface ApiService {
     // Cancelar una orden
     @DELETE("orders/{id}")
     Call<Void> cancelOrder(@Path("id") int orderId, @Header("Authorization") String authToken);
+    // endregion
+
+    // region Visitas
+    //Obtener todas las visitas
+    @GET("visits")
+    Call<List<VisitUserModel.Visit>> getAllVisits(@Header("Authorization") String authToken);
+
     // endregion
 }
 

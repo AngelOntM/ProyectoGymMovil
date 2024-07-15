@@ -4,14 +4,14 @@
     android:id="@+id/fragment_visit_user_admin"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/lavanda"
     tools:context=".VisitUserAdminFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_visits"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="AQUI SON LAS VISITAS" />
+        android:padding="16dp"
+        android:clipToPadding="false"
+        android:scrollbars="vertical" />
 
 </FrameLayout>

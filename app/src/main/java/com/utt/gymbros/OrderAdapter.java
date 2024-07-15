@@ -29,32 +29,50 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHolder> {
+public class OrderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final Context context;
     private final List<OrderModel.Order> orderList;
+    private static final int VIEW_TYPE_ORDER = 1;
+    private static final int VIEW_TYPE_EMPTY = 0;
 
     public OrderAdapter(Context context, List<OrderModel.Order> orderList) {
         this.context = context;
         this.orderList = orderList;
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        if (orderList.isEmpty()) {
+            return VIEW_TYPE_EMPTY;
+        } else {
+            return VIEW_TYPE_ORDER;
+        }
+    }
+
     @NonNull
     @Override
-    public OrderViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_order, parent, false);
-        return new OrderViewHolder(view);
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        if (viewType == VIEW_TYPE_EMPTY) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_order_empty, parent, false);
+            return new EmptyViewHolder(view);
+        } else {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_order, parent, false);
+            return new OrderViewHolder(view);
+        }
     }
 
     @Override
-    public void onBindViewHolder(@NonNull OrderViewHolder holder, int position) {
-        OrderModel.Order order = orderList.get(position);
-        holder.bind(order, position);
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        if (holder instanceof OrderViewHolder) {
+            OrderModel.Order order = orderList.get(position);
+            ((OrderViewHolder) holder).bind(order, position);
+        }
     }
 
     @Override
     public int getItemCount() {
-        return orderList.size();
+        return orderList.isEmpty() ? 1 : orderList.size();
     }
 
     private String getToken() {
@@ -95,6 +113,12 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
         });
     }
 
+    public void updateOrderList(List<OrderModel.Order> newOrderList) {
+        orderList.clear();
+        orderList.addAll(newOrderList);
+        notifyDataSetChanged();
+    }
+
     public class OrderViewHolder extends RecyclerView.ViewHolder {
 
         private final TextView orderIdTextView;
@@ -111,14 +135,12 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
             orderTotalTextView = itemView.findViewById(R.id.text_order_total);
             btnCancelOrder = itemView.findViewById(R.id.btn_cancel_order);
 
-            // Configurar clic listener para el botón Cancelar Orden
             btnCancelOrder.setOnClickListener(v -> {
                 new MaterialAlertDialogBuilder(itemView.getContext())
                         .setTitle("Cancelar Orden")
                         .setMessage("¿Estás seguro de que deseas cancelar esta orden?")
                         .setCancelable(false)
                         .setPositiveButton("Sí", (dialog, which) -> {
-                            // Lógica para cancelar la orden aquí
                             int position = getAdapterPosition();
                             if (position != RecyclerView.NO_POSITION) {
                                 OrderModel.Order order = orderList.get(position);
@@ -137,7 +159,6 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
             orderStatusTextView.setText("Estado: " + order.getEstado());
             orderTotalTextView.setText("Total $" + order.getTotalAmount());
 
-            // Cambiar el color de fondo y texto según el estado de la orden
             switch (order.getEstado()) {
                 case "Pagada":
                     itemView.setBackgroundColor(Color.parseColor("#b8f397")); // Verde seleccionado
@@ -169,4 +190,11 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
             orderTotalTextView.setTextColor(color);
         }
     }
+
+    public class EmptyViewHolder extends RecyclerView.ViewHolder {
+        public EmptyViewHolder(@NonNull View itemView) {
+            super(itemView);
+        }
+    }
 }
+

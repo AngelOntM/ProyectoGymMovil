@@ -14,12 +14,17 @@ import com.google.android.material.tabs.TabLayoutMediator;
 
 public class UsersAdminFragment extends Fragment {
 
+    public static final String ARG_TOKEN = "token";
+
     private ViewPager2 viewPager;
     private TabLayout tabLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            String token = getArguments().getString(ARG_TOKEN);
+        }
     }
 
     @Nullable
@@ -48,6 +53,14 @@ public class UsersAdminFragment extends Fragment {
                 }).attach();
 
         return view;
+    }
+
+    public static UsersAdminFragment newInstance(String token) {
+        UsersAdminFragment fragment = new UsersAdminFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_TOKEN, token);
+        fragment.setArguments(args);
+        return fragment;
     }
 }
 
