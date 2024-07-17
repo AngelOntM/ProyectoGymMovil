@@ -22,7 +22,7 @@ public class ViewPagerAdapterManagementAdmin extends FragmentStateAdapter {
             case 0:
                 return OrdersAdminFragment.newInstance(token);
             case 1:
-                return new ProductsAdminFragment();
+                return ProductsAdminFragment.newInstance(token);
             case 2:
                 return MembershipsAdminFragment.newInstance(token);
             default:

@@ -3,8 +3,8 @@ package com.utt.gymbros.api;
 import com.utt.gymbros.model.AuthModel;
 import com.utt.gymbros.model.MembershipModel;
 import com.utt.gymbros.model.OrderModel;
+import com.utt.gymbros.model.ProductModel;
 import com.utt.gymbros.model.VisitUserModel;
-
 
 import java.util.List;
 
@@ -24,26 +24,21 @@ public interface ApiService {
 
     @POST("verify-2fa")
     Call<AuthModel.VerifyCodeResponse> verifyCode(@Body AuthModel.VerifyCodeRequest verifyCodeRequest);
-
     // endregion
 
-    // region Membresias
-    //Crear una membresia
+    // region Membresías
     @POST("membresias")
     Call<Void> createMembership(@Body MembershipModel.CreateMembershipRequest request, @Header("Authorization") String token);
 
-    //Obtener todas las membresias
     @GET("membresias/all")
     Call<List<MembershipModel.Membership>> getMemberships(@Header("Authorization") String authToken);
 
-    //Cambiar el estado de una membresia (activa/inactiva)
     @PUT("membresias/{id}/toggle-active")
     Call<Void> toggleMembershipActive(
             @Path("id") int membershipId,
             @Header("Authorization") String authToken
     );
 
-    //Modificar una membresia
     @PUT("membresias/{id}")
     Call<Void> updateMembership(
             @Path("id") int membershipId,
@@ -51,7 +46,6 @@ public interface ApiService {
             @Header("Authorization") String authToken
     );
 
-    //Eliminar una membresia
     @DELETE("membresias/{id}")
     Call<Void> deleteMembership(
             @Path("id") int membershipId,
@@ -60,20 +54,42 @@ public interface ApiService {
     // endregion
 
     // region Órdenes
-    // Obtener todas las órdenes
     @GET("orders")
     Call<List<OrderModel.Order>> getAllOrders(@Header("Authorization") String authToken);
 
-    // Cancelar una orden
     @DELETE("orders/{id}")
     Call<Void> cancelOrder(@Path("id") int orderId, @Header("Authorization") String authToken);
     // endregion
 
     // region Visitas
-    //Obtener todas las visitas
     @GET("visits")
     Call<List<VisitUserModel.Visit>> getAllVisits(@Header("Authorization") String authToken);
+    // endregion
 
+    // region Productos
+    @POST("productos")
+    Call<Void> createProduct(@Body ProductModel.CreateProductRequest request, @Header("Authorization") String token);
+
+    @GET("productos/all")
+    Call<List<ProductModel.Product>> getProducts(@Header("Authorization") String authToken);
+
+    @PUT("productos/{id}")
+    Call<Void> updateProduct(
+            @Path("id") int productId,
+            @Body ProductModel.Product product,
+            @Header("Authorization") String authToken
+    );
+
+    @PUT("productos/{id}/toggle-active")
+    Call<Void> toggleProductActive(
+            @Path("id") int productId,
+            @Header("Authorization") String authToken
+    );
+
+    @DELETE("productos/{id}")
+    Call<Void> deleteProduct(
+            @Path("id") int productId,
+            @Header("Authorization") String authToken
+    );
     // endregion
 }
-

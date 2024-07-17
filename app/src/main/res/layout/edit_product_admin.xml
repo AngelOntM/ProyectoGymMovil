@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/edit_membership_admin"
+    android:id="@+id/edit_product_admin"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -11,7 +11,8 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        app:navigationIcon="@drawable/ic_close" />
+        app:navigationIcon="@drawable/ic_close"
+        app:title="Editar Producto" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
@@ -22,7 +23,7 @@
             android:id="@+id/productNameEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Nombre de la membresía" />
+            android:hint="Nombre del producto" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout

@@ -2,7 +2,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/dialog_membership_details"
+    android:id="@+id/dialog_product_details"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -12,7 +12,7 @@
         android:id="@+id/dialog_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Título de la membresía"
+        android:text="Título del producto"
         android:textSize="20sp"
         android:textStyle="bold" />
 
@@ -20,7 +20,7 @@
         android:id="@+id/dialog_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Descripción de la membresía"
+        android:text="Descripción del producto"
         android:textSize="16sp"
         android:layout_marginTop="8dp" />
 
@@ -28,7 +28,7 @@
         android:id="@+id/dialog_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Precio de la membresía"
+        android:text="Precio del producto"
         android:textSize="16sp"
         android:layout_marginTop="8dp" />
 

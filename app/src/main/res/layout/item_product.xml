@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/item_membership"
+    android:id="@+id/item_product"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp">
@@ -13,7 +13,7 @@
         android:padding="16dp">
 
         <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/image_membership"
+            android:id="@+id/image_product"
             android:layout_width="64dp"
             android:layout_height="64dp"
             android:layout_marginEnd="16dp"
@@ -28,26 +28,48 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/title_membership"
+                android:id="@+id/title_product"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Titulo membresia"
+                android:text="Título del producto"
                 android:textAppearance="?attr/textAppearanceHeadline6" />
 
             <TextView
-                android:id="@+id/description_membership"
+                android:id="@+id/description_product"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Descripcion membresia"
+                android:text="Descripción del producto"
                 android:textAppearance="?attr/textAppearanceBody2" />
+
+            <TextView
+                android:id="@+id/stock_product"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Stock"
+                android:textAppearance="?attr/textAppearanceBodyMedium" />
+
+            <!-- Divider -->
+            <com.google.android.material.divider.MaterialDivider
+                android:layout_width="match_parent"
+                android:layout_height="1.5dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="@color/black_dark"
+                android:alpha="0.12" />
+            <TextView
+                android:id="@+id/active_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Estatus"
+                android:textAppearance="?attr/textAppearanceBodyMedium" />
         </LinearLayout>
 
         <TextView
-            android:id="@+id/price_membership"
+            android:id="@+id/price_product"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="Precio membresia"
+            android:text="Precio del producto"
             android:textAppearance="?attr/textAppearanceBody2" />
 
     </LinearLayout>
