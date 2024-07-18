@@ -62,10 +62,10 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
         // Mostrar estado activo o inactivo
         if (product.getActive() == 1) {
-            holder.activeStatus.setText("Activo");
+            holder.activeStatus.setText("Producto Activo");
             holder.activeStatus.setTextColor(Color.GREEN);
         } else {
-            holder.activeStatus.setText("Inactivo");
+            holder.activeStatus.setText("Producto Inactivo");
             holder.activeStatus.setTextColor(Color.RED);
         }
 

@@ -54,8 +54,8 @@
                 android:layout_height="1.5dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                android:background="@color/black_dark"
-                android:alpha="0.12" />
+                app:dividerColor="@color/black_light"
+                android:alpha="0.3" />
             <TextView
                 android:id="@+id/active_status"
                 android:layout_width="wrap_content"
