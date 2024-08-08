@@ -37,7 +37,7 @@ import retrofit2.Retrofit;
 
 public class MainActivity extends AppCompatActivity {
 
-    AlertDialog progressDialog;
+    androidx.appcompat.app.AlertDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,6 +147,7 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call<AuthModel.LoginResponse> call, retrofit2.Response<AuthModel.LoginResponse> response) {
                 if (response.isSuccessful()) {
                     AuthModel.LoginResponse loginResponse = response.body();
+                    Integer id = loginResponse.getUser().getId();
                     String role = String.valueOf(loginResponse.getUser().getRol().getRole());
                     String token = loginResponse.getToken();
                     String message = loginResponse.getMessage();
@@ -161,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
                         runOnUiThread(progressDialog::dismiss);
                     } else {
                         saveToken(token);
-                        saveDataUser(loginResponse.getUser().getName(), email, role);
+                        saveDataUser(loginResponse.getUser().getName(), email, role, id);
                         btnLogin.setEnabled(true);
                         runOnUiThread(progressDialog::dismiss);
                     }
@@ -181,6 +182,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
     private void showVerificationCodeDialog(String email) {
         runOnUiThread(progressDialog::dismiss);
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(MainActivity.this);
@@ -275,12 +277,13 @@ public class MainActivity extends AppCompatActivity {
                         //parar el contador al verificar el codigo
                         handler.removeCallbacks(runnable);
                         AuthModel.VerifyCodeResponse verifyCodeResponse = response.body();
+                        Integer id = verifyCodeResponse.getUser().getId();
                         String message = verifyCodeResponse.getMessage();
                         String token = verifyCodeResponse.getToken();
                         String user = verifyCodeResponse.getUser().getName();
                         if (message.equals("User logged in successfully")) {
                             saveToken(token);
-                            saveDataUser(user, email, "Admin");
+                            saveDataUser(user, email, "Admin",id);
                             dialog.dismiss();
                         } else {
                             showSnackbar("Codigo incorrecto");
@@ -299,12 +302,11 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-
-
     // Métodos auxiliares para mejorar la organización
     private void showSnackbar(String message) {
         Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_SHORT).show();
     }
+
     private void saveToken(String token) {
         SharedPreferences sharedPreferences = null;
         try {
@@ -324,7 +326,7 @@ public class MainActivity extends AppCompatActivity {
         editor.apply();
     }
 
-    private void saveDataUser(String name, String email, String role){
+    private void saveDataUser(String name, String email, String role, Integer id) {
         SharedPreferences sharedPreferences = null;
         try {
             sharedPreferences = EncryptedSharedPreferences.create(
@@ -342,6 +344,7 @@ public class MainActivity extends AppCompatActivity {
         editor.putString("name", name);
         editor.putString("email", email);
         editor.putString("role", role);
+        editor.putInt("id", id);
         editor.apply();
 
         if (role.equals("Admin")) {

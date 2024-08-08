@@ -1,14 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
     <item
-        android:id="@+id/item_1"
+        android:id="@+id/nav_start_user"
         android:enabled="true"
         android:icon="@drawable/dashboard_icon"
-        android:title="Inicio"/>
+        android:title="Inicio"
+        tools:ignore="HardcodedText" />
     <item
-        android:id="@+id/item_2"
+        android:id="@+id/nav_membership_user"
         android:enabled="true"
-        android:icon="@drawable/group_icon"
-        android:title="Rutinas"/>
+        android:icon="@drawable/membership_icon"
+        android:title="Membresia"
+        tools:ignore="HardcodedText" />
+
+    <item
+        android:id="@+id/nav_workouts_user"
+        android:enabled="true"
+        android:icon="@drawable/fitness_center_icon"
+        android:title="Rutinas"
+        tools:ignore="HardcodedText" />
+
+    <item
+        android:id="@+id/nav_account_user"
+        android:enabled="true"
+        android:icon="@drawable/account_icon"
+        android:title="Cuenta"
+        tools:ignore="HardcodedText" />
 </menu>

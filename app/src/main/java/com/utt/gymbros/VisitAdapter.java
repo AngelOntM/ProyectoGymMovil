@@ -17,34 +17,52 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class VisitAdapter extends RecyclerView.Adapter<VisitAdapter.VisitViewHolder> {
+public class VisitAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Context context;
     private List<VisitUserModel.Visit> visitList;
+    private static final int VIEW_TYPE_VISIT = 1;
+    private static final int VIEW_TYPE_EMPTY = 0;
 
     public VisitAdapter(Context context, List<VisitUserModel.Visit> visitList) {
         this.context = context;
         this.visitList = visitList;
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        if (visitList.isEmpty()) {
+            return VIEW_TYPE_EMPTY;
+        } else {
+            return VIEW_TYPE_VISIT;
+        }
+    }
+
     @NonNull
     @Override
-    public VisitViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_visit, parent, false);
-        return new VisitViewHolder(view);
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        if (viewType == VIEW_TYPE_EMPTY) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_visit_empty, parent, false);
+            return new EmptyViewHolder(view);
+        } else {
+            View view = LayoutInflater.from(context).inflate(R.layout.item_visit, parent, false);
+            return new VisitViewHolder(view);
+        }
     }
 
     @Override
-    public void onBindViewHolder(@NonNull VisitViewHolder holder, int position) {
-        VisitUserModel.Visit visit = visitList.get(position);
-        holder.visitDateTextView.setText(formatDate(visit.getVisitDate()));
-        holder.checkInTimeTextView.setText(formatTime(visit.getCheckInTime()));
-        holder.userNameTextView.setText(visit.getUser().getName());
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        if (holder instanceof VisitViewHolder) {
+            VisitUserModel.Visit visit = visitList.get(position);
+            ((VisitViewHolder) holder).visitDateTextView.setText(formatDate(visit.getVisitDate()));
+            ((VisitViewHolder) holder).checkInTimeTextView.setText(formatTime(visit.getCheckInTime()));
+            ((VisitViewHolder) holder).userNameTextView.setText(visit.getUser().getName());
+        }
     }
 
     @Override
     public int getItemCount() {
-        return visitList.size();
+        return visitList.isEmpty() ? 1 : visitList.size();
     }
 
     private String formatDate(String dateStr) {
@@ -82,6 +100,12 @@ public class VisitAdapter extends RecyclerView.Adapter<VisitAdapter.VisitViewHol
             visitDateTextView = itemView.findViewById(R.id.visit_date);
             checkInTimeTextView = itemView.findViewById(R.id.check_in_time);
             userNameTextView = itemView.findViewById(R.id.user_name);
+        }
+    }
+
+    public class EmptyViewHolder extends RecyclerView.ViewHolder {
+        public EmptyViewHolder(@NonNull View itemView) {
+            super(itemView);
         }
     }
 }

@@ -91,7 +91,7 @@ public class AdminActivity extends AppCompatActivity {
                 case DASHBOARD_ADMIN -> new DashboardAdminFragment();
                 case USERS_ADMIN ->  UsersAdminFragment.newInstance(token);
                 case MANAGEMENT_ADMIN ->  ManagementAdminFragment.newInstance(token);
-                case ACCOUNT_ADMIN -> new AccountAdminFragment();
+                case ACCOUNT_ADMIN -> AccountAdminFragment.newInstance(token);
             };
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.admin_main_activity, fragment)

@@ -58,6 +58,10 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview:1.2.1")
     implementation("com.squareup.picasso:picasso:2.71828")
 
+    // Stripe Android SDK
+    implementation ("com.stripe:stripe-android:20.48.2")
+    implementation ("com.stripe:stripe-java:26.0.0")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

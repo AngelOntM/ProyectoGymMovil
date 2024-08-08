@@ -1,6 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="ShapeAppearanceOverlay.App.Card.Cut" parent="">
+    <!-- Estilo para tarjetas con esquinas recortadas -->
+    <style name="ShapeAppearanceOverlay.App.Card.Cut" parent="ShapeAppearance.Material3.LargeComponent">
         <item name="cornerFamily">cut</item>
-        <item name="cornerSize">8dp</item> </style>
+        <item name="cornerSize">8dp</item>
+    </style>
+
+    <!-- Estilo para imágenes circulares -->
+    <style name="CircleImageView" parent="ShapeAppearance.Material3.LargeComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
+    <!-- Estilo para imágenes con esquinas redondeadas -->
+    <style name="ShapeAppearanceOverlay.App.Image.RoundedCorners" parent="ShapeAppearance.Material3.LargeComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">8dp</item>
+    </style>
+
+    <style name="THEME_FULL_SCREEN_DIALOG" parent="Theme.MaterialComponents.Light.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowBackground">@android:color/white</item>
+    </style>
+
+    <style name="ShapeAppearanceOverlay.App.TopRoundedCorners" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopRight">12dp</item>
+        <item name="cornerSizeTopLeft">12dp</item>
+        <item name="cornerSizeBottomRight">0dp</item>
+        <item name="cornerSizeBottomLeft">0dp</item>
+    </style>
 </resources>

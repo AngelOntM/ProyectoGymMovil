@@ -3,10 +3,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/fragment_products_admin"
+    android:id="@+id/fragment_memberships_user"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ProductsAdminFragment">
+    tools:context=".MembershipsUserFragment">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_top"
@@ -16,12 +16,13 @@
         app:layout_constraintGuide_percent="0.1" />
 
     <Button
-        android:id="@+id/btn_add_product"
+        android:id="@+id/btn_buy_membership"
         style="@style/Widget.Material3.Button.ElevatedButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:text="Añadir Producto"
+        android:text="Comprar Membresía"
+        android:fontFamily="@font/league_spartan"
         android:textColor="@color/white"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -43,7 +44,7 @@
         app:layout_constraintGuide_percent="0.9" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_products"
+        android:id="@+id/recycler_memberships"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:padding="16dp"
@@ -71,7 +72,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="16dp"
-            android:text="No hay productos disponibles"
+            android:text="No hay membresías disponibles"
             android:textColor="@android:color/black"
             android:textSize="18sp"
             android:textAlignment="center" />
