@@ -33,7 +33,7 @@ public class CheckoutActivity extends AppCompatActivity {
     private PaymentSheet paymentSheet;
     private androidx.appcompat.app.AlertDialog progressDialog;
 
-    private final String STRIPE_PUBLISHABLE_KEY = "pk_test_51PiLliAvmYkVRZQNHFgKZm3BYNAodJuzqZ8ApCZScOV2L5wPp2761HfhogfqEtMmKwMCTO6tR7wrog9UMwML2KAT000HWEGzKG";
+    private final String STRIPE_PUBLISHABLE_KEY = "pk_test_51Pc08PLTqA9tmmllvh1GBkYunBiAFmNi8AF0bmEyKAAyhcKBrv1YJFpNfOAX7Tr6Ky0VqODPDlVsoaemqIOMRrrn00xMiBhNCh";
     private String AUTH_TOKEN;
     private String paymentIntentId;
     private Integer orderId;

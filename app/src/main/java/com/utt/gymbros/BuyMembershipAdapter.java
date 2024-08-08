@@ -43,8 +43,6 @@ public class BuyMembershipAdapter extends RecyclerView.Adapter<BuyMembershipAdap
     private static String AUTH_TOKEN;
     private static String USER_EMAIL;
     private static String USER_NAME;
-    private static String STRIPE_PUBLISHABLE_KEY = "pk_test_51PiLliAvmYkVRZQNHFgKZm3BYNAodJuzqZ8ApCZScOV2L5wPp2761HfhogfqEtMmKwMCTO6tR7wrog9UMwML2KAT000HWEGzKG";
-    private static String STRIPE_SECRET_KEY = "sk_test_51PiLliAvmYkVRZQNbZwbXJ0icXaF8fGjZWsH8BIm0DI5ufcYQJrtcQU7pCsDm4pC98euDETxIKgBKZdtPniS74MA00MQ7mzQRG";
     private final List<MembershipModel.Membership> membershipList;
     private final Context context;
     private final FullScreenDialogBuyMembership dialogFragment;
