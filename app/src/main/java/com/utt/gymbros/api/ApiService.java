@@ -16,6 +16,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
+import retrofit2.http.Query;
 import retrofit2.http.Path;
 
 public interface ApiService {
@@ -67,7 +68,11 @@ public interface ApiService {
 
     // region Órdenes - Administrador
     @GET("orders")
-    Call<List<OrderModel.Order>> getAllOrders(@Header("Authorization") String authToken);
+    Call<List<OrderModel.Order>> getAllOrders(
+            @Header("Authorization") String authToken,
+            @Query("start_date") String startDate,
+            @Query("end_date") String endDate
+    );
 
     @DELETE("orders/{id}")
     Call<Void> cancelOrder(@Path("id") int orderId, @Header("Authorization") String authToken);
@@ -75,7 +80,12 @@ public interface ApiService {
 
     // region Visitas - Administrador
     @GET("visits")
-    Call<List<VisitUserModel.Visit>> getAllVisits(@Header("Authorization") String authToken);
+    Call<List<VisitUserModel.Visit>> getAllVisits(
+            @Header("Authorization") String authToken,
+            @Query("start_date") String startDate,
+            @Query("end_date") String endDate
+    );
+
     // endregion
 
     // region Productos - Administrador

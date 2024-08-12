@@ -70,4 +70,24 @@ public class OrderModel {
         public String getUpdatedAt() { return updatedAt; }
     }
 
+    public static class OrderRequest {
+        @SerializedName("start_date")
+        private String start_date;
+        @SerializedName("end_date")
+        private String end_date;
+
+        // Getters
+        public String getStartDate() { return start_date; }
+        public String getEndDate() { return end_date; }
+
+        // Setters
+        public void setStartDate(String start_date) { this.start_date = start_date; }
+        public void setEndDate(String end_date) { this.end_date = end_date; }
+
+        // Constructor
+        public OrderRequest(String start_date, String end_date) {
+            this.start_date = start_date;
+            this.end_date = end_date;
+        }
+    }
 }
