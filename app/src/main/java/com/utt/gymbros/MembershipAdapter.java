@@ -56,7 +56,7 @@ public class MembershipAdapter extends RecyclerView.Adapter<MembershipAdapter.Me
         MembershipModel.Membership membership = membershipList.get(position);
         holder.title.setText(membership.getProductName());
 
-        if (membership.getActive() == 1) {
+        if (membership.isActive()) {
             holder.description.setText("Membresía activa");
             holder.description.setTextColor(Color.GREEN);
         } else {
@@ -83,11 +83,11 @@ public class MembershipAdapter extends RecyclerView.Adapter<MembershipAdapter.Me
             dialogDescription.setText(membership.getDescription());
             dialogPrice.setText(membership.getPrice());
 
-            activeSwitch.setChecked(membership.getActive() == 1);
+            activeSwitch.setChecked(membership.isActive());
 
             activeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 MembershipModel.Membership currentMembership = membershipList.get(position);
-                currentMembership.setActive(isChecked ? 1 : 0);
+                currentMembership.setActive(isChecked ? true : false);
                 updateMembershipActive(currentMembership.getId(), isChecked);
                 fragment.updateMembershipActive(currentMembership);
             });

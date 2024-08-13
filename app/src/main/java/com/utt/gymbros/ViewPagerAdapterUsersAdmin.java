@@ -22,9 +22,9 @@ public class ViewPagerAdapterUsersAdmin extends FragmentStateAdapter {
             case 0:
                 return VisitUserAdminFragment.newInstance(token);
             case 1:
-                return new ListUserAdminFragment();
+                return ListUserAdminFragment.newInstance(token);
             default:
-                return new VisitUserAdminFragment();
+                return ListUserAdminFragment.newInstance(token);
         }
     }
     @Override

@@ -93,7 +93,8 @@ public class FullscreenDialogEditMembership extends AppCompatDialogFragment {
 
                 // Agregar el campo de imagen y activo
                 membership.setProductImagePath(null);
-                membership.setActive(membership.getActive());
+                membership.setActive(membership.isActive());  // Aquí se usa isActive() en lugar de getActive()
+
                 // Hacer la petición para actualizar la membresía
                 updateMembership(membership, dialogView);
             }
@@ -151,7 +152,7 @@ public class FullscreenDialogEditMembership extends AppCompatDialogFragment {
                         membership.getDescription(),
                         membership.getPrice(),
                         membership.getDiscount(),
-                        membership.getActive(),
+                        membership.isActive(),  // Aquí también se usa isActive() en lugar de getActive()
                         membership.getProductImagePath(),
                         membership.getDurationDays(),
                         membership.getSize()
@@ -166,7 +167,7 @@ public class FullscreenDialogEditMembership extends AppCompatDialogFragment {
                 if (response.isSuccessful()) {
                     dismiss();
                 } else {
-                    Snackbar.make(dialogView, "Error al actualizar membresia", Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(dialogView, "Error al actualizar membresía", Snackbar.LENGTH_LONG).show();
                 }
             }
 

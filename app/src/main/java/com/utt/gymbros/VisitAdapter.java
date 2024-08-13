@@ -1,6 +1,7 @@
 package com.utt.gymbros;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,9 +55,20 @@ public class VisitAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof VisitViewHolder) {
             VisitUserModel.Visit visit = visitList.get(position);
+
+            // Formatea y asigna la fecha de la visita
             ((VisitViewHolder) holder).visitDateTextView.setText(formatDate(visit.getVisitDate()));
+            // Formatea y asigna la hora de check-in
             ((VisitViewHolder) holder).checkInTimeTextView.setText(formatTime(visit.getCheckInTime()));
-            ((VisitViewHolder) holder).userNameTextView.setText(visit.getUser().getName());
+
+            // Verifica si el objeto User no es nulo antes de acceder a sus métodos
+            if (visit.getUser() != null && visit.getUser().getName() != null) {
+                Log.d("VisitAdapter", "User is not null: " + visit.getUser().getName());
+                ((VisitViewHolder) holder).userNameTextView.setText(visit.getUser().getName());
+            } else {
+                Log.d("VisitAdapter", "User is null or name is null");
+                ((VisitViewHolder) holder).userNameTextView.setText("Usuario desconocido");
+            }
         }
     }
 

@@ -25,7 +25,7 @@ import retrofit2.Response;
 
 public class FullScreenDialogCreateProduct extends DialogFragment {
 
-    private TextInputEditText productNameEditText, descriptionEditText, priceEditText, discountEditText;
+    private TextInputEditText productNameEditText, descriptionEditText, priceEditText, discountEditText, stockEditText;
     private MaterialButton saveButton, cancelButton;
     private ProgressBar progressBar;
     private String token;
@@ -47,6 +47,7 @@ public class FullScreenDialogCreateProduct extends DialogFragment {
         descriptionEditText = view.findViewById(R.id.descriptionEditText);
         priceEditText = view.findViewById(R.id.priceEditText);
         discountEditText = view.findViewById(R.id.discountEditText);
+        stockEditText = view.findViewById(R.id.stockEditText);
         saveButton = view.findViewById(R.id.saveButton);
         cancelButton = view.findViewById(R.id.cancelButton);
         progressBar = view.findViewById(R.id.progressBar);
@@ -84,16 +85,17 @@ public class FullScreenDialogCreateProduct extends DialogFragment {
         String description = descriptionEditText.getText().toString();
         String price = priceEditText.getText().toString();
         String discount = discountEditText.getText().toString();
+        int stock = Integer.parseInt(stockEditText.getText().toString());
 
 
         ProductModel.CreateProductRequest request = new ProductModel.CreateProductRequest(
                 productName,
                 description,
                 price,
-                1,
+                stock,
                 discount,
                 1,
-                1
+                true
         );
 
         ApiService apiService = ApiClient.getInstance().create(ApiService.class);

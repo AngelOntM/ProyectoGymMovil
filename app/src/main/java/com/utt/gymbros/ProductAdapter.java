@@ -61,7 +61,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         holder.stock.setText("Stock: " + product.getStock());
 
         // Mostrar estado activo o inactivo
-        if (product.getActive() == 1) {
+        if (product.isActive()) {
             holder.activeStatus.setText("Producto Activo");
             holder.activeStatus.setTextColor(Color.GREEN);
         } else {
@@ -86,11 +86,11 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             dialogDescription.setText(product.getDescription());
             dialogPrice.setText(product.getPrice());
 
-            activeSwitch.setChecked(product.getActive() == 1);
+            activeSwitch.setChecked(product.isActive());
 
             activeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 ProductModel.Product currentProduct = productList.get(position);
-                currentProduct.setActive(isChecked ? 1 : 0);
+                currentProduct.setActive(isChecked ? true : false);
                 ApiService apiService = ApiClient.getInstance().create(ApiService.class);
                 Call<Void> call = apiService.toggleProductActive(currentProduct.getId(), getToken());
                 call.enqueue(new Callback<Void>() {
@@ -98,7 +98,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
                     public void onResponse(Call<Void> call, Response<Void> response) {
                         if (response.isSuccessful()) {
                             // Actualizar visualmente el estado activo/inactivo
-                            currentProduct.setActive(isChecked ? 1 : 0);
+                            currentProduct.setActive(isChecked ? true : false);
                             notifyItemChanged(position); // Notificar al adaptador del cambio
                             Snackbar.make(((AppCompatActivity) context).findViewById(android.R.id.content), "Producto actualizado", Snackbar.LENGTH_SHORT).show();
                         } else {
@@ -111,6 +111,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
                     public void onFailure(Call<Void> call, Throwable t) {
                         // Mostrar mensaje de error si falla la solicitud
                         Snackbar.make(((AppCompatActivity) context).findViewById(android.R.id.content), "Error en la solicitud", Snackbar.LENGTH_SHORT).show();
+
+
                     }
                 });
             });

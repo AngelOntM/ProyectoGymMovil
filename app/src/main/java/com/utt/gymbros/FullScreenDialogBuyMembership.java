@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 import com.utt.gymbros.api.ApiClient;
 import com.utt.gymbros.api.ApiService;
@@ -29,6 +30,7 @@ public class FullScreenDialogBuyMembership extends DialogFragment {
     private List<MembershipModel.Membership> membershipList;
     private RecyclerView recyclerView;
     private BuyMembershipAdapter adapter;
+    androidx.appcompat.app.AlertDialog progressDialogWaiting;
 
     public static FullScreenDialogBuyMembership newInstance(String token) {
         FullScreenDialogBuyMembership fragment = new FullScreenDialogBuyMembership();
@@ -65,6 +67,11 @@ public class FullScreenDialogBuyMembership extends DialogFragment {
             }
         });
 
+        progressDialogWaiting = new MaterialAlertDialogBuilder(requireContext())
+                .setView(R.layout.progress_dialog_waiting)
+                .setCancelable(false)
+                .create();
+
         recyclerView = view.findViewById(R.id.recycler_memberships);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
@@ -74,6 +81,7 @@ public class FullScreenDialogBuyMembership extends DialogFragment {
     }
 
     private void fetchMembershipList() {
+        progressDialogWaiting.show();
         token = getArguments().getString("token");
         ApiService apiService = ApiClient.getInstance().create(ApiService.class);
         Call<List<MembershipModel.Membership>> call = apiService.getMembershipsUser(token);
@@ -84,14 +92,17 @@ public class FullScreenDialogBuyMembership extends DialogFragment {
                     membershipList = response.body();
                     adapter = new BuyMembershipAdapter(getContext(), membershipList, FullScreenDialogBuyMembership.this);
                     recyclerView.setAdapter(adapter);
+                    progressDialogWaiting.dismiss();
                 } else {
                     Log.e("Membership", "Error al obtener la lista de membresías");
+                    progressDialogWaiting.dismiss();
                 }
             }
 
             @Override
             public void onFailure(Call<List<MembershipModel.Membership>> call, Throwable t) {
                 Log.e("Membership", "Error al obtener la lista de membresías");
+                progressDialogWaiting.dismiss();
             }
         });
     }

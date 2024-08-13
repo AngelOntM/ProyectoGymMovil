@@ -117,6 +117,9 @@ public class MembershipsAdminFragment extends Fragment {
             public void onFailure(Call<List<MembershipModel.Membership>> call, Throwable t) {
                 showPersistentSnackbar("Error en la solicitud");
                 scheduleNextFetch();
+
+                //Imrpimri error en consola
+                t.printStackTrace();
             }
         });
     }

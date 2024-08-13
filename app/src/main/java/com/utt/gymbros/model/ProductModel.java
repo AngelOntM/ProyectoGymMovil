@@ -21,7 +21,7 @@ public class ProductModel {
         @SerializedName("discount")
         private String discount;
         @SerializedName("active")
-        private int active;
+        private boolean active; // Cambiado a boolean
         @SerializedName("category_id")
         private int categoryId;
         @SerializedName("category_name")
@@ -33,7 +33,7 @@ public class ProductModel {
         @SerializedName("updated_at")
         private String updatedAt;
 
-        public Product(int id, String productName, String description, String price, int stock, String discount, int active, int categoryId, String categoryName, String productImagePath, String createdAt, String updatedAt) {
+        public Product(int id, String productName, String description, String price, int stock, String discount, boolean active, int categoryId, String categoryName, String productImagePath, String createdAt, String updatedAt) {
             this.id = id;
             this.productName = productName;
             this.description = description;
@@ -48,7 +48,7 @@ public class ProductModel {
             this.updatedAt = updatedAt;
         }
 
-        // Getters and setters
+        // Getters y setters actualizados
         public int getId() {
             return id;
         }
@@ -93,11 +93,11 @@ public class ProductModel {
             this.discount = discount;
         }
 
-        public int getActive() {
+        public boolean isActive() { // Cambiado a boolean
             return active;
         }
 
-        public void setActive(int active) {
+        public void setActive(boolean active) { // Cambiado a boolean
             this.active = active;
         }
 
@@ -165,9 +165,9 @@ public class ProductModel {
         @SerializedName("category_id")
         private int categoryId;
         @SerializedName("active")
-        private int active; // Use int for active state
+        private boolean active; // Cambiado a boolean
 
-        public CreateProductRequest(String productName, String description, String price, int stock, String discount, int categoryId, int active) {
+        public CreateProductRequest(String productName, String description, String price, int stock, String discount, int categoryId, boolean active) {
             this.productName = productName;
             this.description = description;
             this.price = price;

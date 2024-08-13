@@ -1,10 +1,12 @@
 package com.utt.gymbros.api;
 
 import com.utt.gymbros.model.AuthModel;
+import com.utt.gymbros.model.ClienteModel;
 import com.utt.gymbros.model.MembershipModel;
 import com.utt.gymbros.model.OrderModel;
 import com.utt.gymbros.model.PaymentsModel;
 import com.utt.gymbros.model.ProductModel;
+import com.utt.gymbros.model.UserModel;
 import com.utt.gymbros.model.VisitUserModel;
 
 import java.util.List;
@@ -29,6 +31,9 @@ public interface ApiService {
 
     @POST("logout")
     Call<Void> logout(@Header("Authorization") String authToken);
+
+    @POST("change-password")
+    Call<AuthModel.changePasswordResponse> changePassword(@Body AuthModel.changePasswordRequest request, @Header("Authorization") String token);
     // endregion
 
     // region Membresías - Administrador
@@ -62,7 +67,14 @@ public interface ApiService {
     @GET("membresias")
     Call<List<MembershipModel.Membership>> getMembershipsUser(@Header("Authorization") String authToken);
 
-
+    @POST("membership/redeem")
+    Call<MembershipModel.RedeemMembershipCodeResponse> redeemMembership(
+            @Body MembershipModel.RedeemMembershipCodeRequest request,
+            @Header("Authorization") String authToken,
+            @Header("Content-Type") String contentType,
+            @Header("Accept") String accept,
+            @Header("X-Requested-With") String xRequestedWith
+    );
 
     // endregion
 
@@ -140,4 +152,25 @@ public interface ApiService {
     );
     // endregion
 
+    //region Clientes - Administrador
+    @GET("users/clientes")
+    Call<ClienteModel.ClienteResponse> getClientes(@Header("Authorization") String authToken);
+
+    //endregion
+
+    //region Usuario - General
+
+    @GET("user")
+    Call<UserModel.UserResponse> getUser(@Header("Authorization") String authToken);
+
+    //endregion
+
+    //region Ordenes - Usuario
+    @GET("orders/order/user")
+    Call<List<OrderModel.OrderUserResponse>> getOrdersUser(@Header("Authorization") String authToken);
+
+    @GET("orders/{id}")
+    Call<OrderModel.OrderUserDetailResponse> getOrderDetailUser(@Path("id") int orderId, @Header("Authorization") String authToken);
+
+    //endregion
 }

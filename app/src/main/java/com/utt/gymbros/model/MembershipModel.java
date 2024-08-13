@@ -19,7 +19,7 @@ public class MembershipModel {
         @SerializedName("discount")
         private String discount;
         @SerializedName("active")
-        private int active;
+        private boolean active; // Cambiado de int a boolean
         @SerializedName("category_id")
         private int categoryId;
         @SerializedName("category_name")
@@ -35,14 +35,14 @@ public class MembershipModel {
         @SerializedName("updated_at")
         private String updatedAt;
 
-        public Membership(int id, String productName, String description, String price, String discount, int active, String productImagePath, int durationDays, int size) {
+        public Membership(int id, String productName, String description, String price, String discount, boolean active, String productImagePath, int durationDays, int size) {
             this.id = id;
             this.productName = productName;
             this.description = description;
             this.price = price;
             this.discount = discount;
-            this.active = active;
-            this.productImagePath = null;
+            this.active = active; // Cambiado de int a boolean
+            this.productImagePath = productImagePath;
             this.durationDays = durationDays;
             this.size = size;
         }
@@ -53,7 +53,7 @@ public class MembershipModel {
         public String getDescription() { return description == null ? "" : description; }
         public String getPrice() { return price == null ? "" : price; }
         public String getDiscount() { return discount == null ? "" : discount; }
-        public int getActive() { return active; }
+        public boolean isActive() { return active; } // Cambiado de getActive() a isActive() y tipo boolean
         public int getCategoryId() { return categoryId; }
         public String getCategoryName() { return categoryName == null ? "" : categoryName; }
         public String getProductImagePath() { return productImagePath == null ? "" : productImagePath; }
@@ -63,39 +63,16 @@ public class MembershipModel {
         public String getUpdatedAt() { return updatedAt == null ? "" : updatedAt; }
 
         // Setters
-        public void setActive(int i) {
-            active = i;
-        }
-        public void setProductName(String s) {
-            productName = s;
-        }
-        public void setDescription(String s) {
-            description = s;
-        }
-        public void setPrice(String s) {
-            price = s;
-        }
-        public void setDiscount(String s) {
-            discount = s;
-        }
-        public void setCategoryId(int i) {
-            categoryId = i;
-        }
-        public void setCategoryName(String s) {
-            categoryName = s;
-        }
-        public void setProductImagePath(String s) {
-            productImagePath = s;
-        }
-        public void setDurationDays(int i) {
-            durationDays = i;
-        }
-        public void setSize(int i) {
-            size = i;
-        }
-
-
-
+        public void setActive(boolean active) { this.active = active; } // Cambiado de int a boolean
+        public void setProductName(String productName) { this.productName = productName; }
+        public void setDescription(String description) { this.description = description; }
+        public void setPrice(String price) { this.price = price; }
+        public void setDiscount(String discount) { this.discount = discount; }
+        public void setCategoryId(int categoryId) { this.categoryId = categoryId; }
+        public void setCategoryName(String categoryName) { this.categoryName = categoryName; }
+        public void setProductImagePath(String productImagePath) { this.productImagePath = productImagePath; }
+        public void setDurationDays(int durationDays) { this.durationDays = durationDays; }
+        public void setSize(int size) { this.size = size; }
     }
 
     public static class GetMembershipResponse {
@@ -121,7 +98,7 @@ public class MembershipModel {
         @SerializedName("size")
         private int size;
         @SerializedName("active")
-        private int active = 1;
+        private boolean active = true; // Cambiado de int a boolean
         @SerializedName("product_image_path")
         private String product_image_path = null;
 
@@ -136,5 +113,19 @@ public class MembershipModel {
         }
     }
 
+    public static class RedeemMembershipCodeRequest {
+        @SerializedName("code")
+        private String code;
 
+        public RedeemMembershipCodeRequest(String code) {
+            this.code = code;
+        }
+    }
+
+    public static class RedeemMembershipCodeResponse {
+        @SerializedName("message")
+        private String message;
+
+        public String getMessage() { return message; }
+    }
 }

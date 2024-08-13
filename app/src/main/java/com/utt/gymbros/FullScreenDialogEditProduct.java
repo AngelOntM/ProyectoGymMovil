@@ -132,7 +132,7 @@ public class FullScreenDialogEditProduct extends AppCompatDialogFragment {
                         product.getPrice(),
                         product.getStock(),
                         product.getDiscount(),
-                        product.getActive(),
+                        product.isActive(),
                         product.getCategoryId(),
                         product.getCategoryName(),
                         product.getProductImagePath(),

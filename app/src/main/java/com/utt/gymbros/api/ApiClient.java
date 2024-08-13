@@ -20,7 +20,7 @@ public class ApiClient {
 
             // Build Retrofit instance with the custom OkHttpClient
             retrofit = new Retrofit.Builder()
-                    .baseUrl("http://192.168.100.2:8000/api/")
+                    .baseUrl("https://pasameporfavor.site/api/")
                     .addConverterFactory(GsonConverterFactory.create())
                     .client(okHttpClient) // Use the custom client
                     .build();

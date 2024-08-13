@@ -1,16 +1,16 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:id="@+id/item_membership_order_user_empty">
 
     <TextView
-        android:id="@+id/text_no_orders"
+        android:id="@+id/text_no_memberships"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="No hay visitas en este momento"
+        android:text="No has realizado compras de membresías"
         android:fontFamily="@font/league_spartan"
         android:textColor="@color/white_light"
         android:textSize="20dp"
         android:layout_centerInParent="true"/>
-
 </RelativeLayout>

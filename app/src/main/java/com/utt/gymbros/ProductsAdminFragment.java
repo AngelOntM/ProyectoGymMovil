@@ -114,6 +114,9 @@ public class ProductsAdminFragment extends Fragment {
             public void onFailure(Call<List<ProductModel.Product>> call, Throwable t) {
                 showPersistentSnackbar("Error en la solicitud: " + t.getMessage());
                 scheduleNextFetch();
+
+                //Imprimir el error en consola
+                t.printStackTrace();
             }
         });
     }

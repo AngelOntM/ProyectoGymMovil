@@ -74,6 +74,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
+    <TextView
+        android:id="@+id/membership_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No tiene ninguna membresía activa"
+        android:textColor="#e24c5e"
+        android:fontFamily="@font/league_spartan"
+        app:layout_constraintTop_toBottomOf="@id/profile_birthday"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
     <!-- Change password item -->
     <LinearLayout
         android:id="@+id/change_password_item"

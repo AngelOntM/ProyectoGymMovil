@@ -117,5 +117,28 @@ public class AuthModel {
 
         public String getRole(){return rol_name == null ? "" : rol_name;}
     }
+
+    public static class changePasswordRequest{
+        @SerializedName("current_password")
+        private String current_password;
+        @SerializedName("new_password")
+        private String new_password;
+        @SerializedName("new_password_confirmation")
+        private String new_password_confirmation;
+
+        public changePasswordRequest(String current_password, String new_password, String new_password_confirmation){
+            this.current_password = current_password;
+            this.new_password = new_password;
+            this.new_password_confirmation = new_password_confirmation;
+        }
+    }
+    public static class changePasswordResponse{
+        @SerializedName("message")
+        private String message;
+
+        public String getMessage(){
+            return message == null ? "" : message;
+        }
+    }
 }
 
