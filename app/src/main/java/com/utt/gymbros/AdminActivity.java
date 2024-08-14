@@ -51,7 +51,6 @@ public class AdminActivity extends AppCompatActivity {
         String token = sharedPreferences.getString("auth_token", "");
 
         enum MenuItemId{
-            DASHBOARD_ADMIN(R.id.nav_dashboard_admin),
             USERS_ADMIN(R.id.nav_users_admin),
             MANAGEMENT_ADMIN(R.id.nav_management_admin),
             ACCOUNT_ADMIN(R.id.nav_account_admin);
@@ -70,9 +69,9 @@ public class AdminActivity extends AppCompatActivity {
         // Initial fragment setup
         if (savedInstanceState == null) {  // Avoid fragment recreation on configuration change
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.admin_main_activity, new DashboardAdminFragment())
+                    .replace(R.id.admin_main_activity, UsersAdminFragment.newInstance(token))
                     .commit();
-            navigationView.setSelectedItemId(R.id.nav_dashboard_admin);
+            navigationView.setSelectedItemId(R.id.nav_users_admin);
         }
 
         navigationView.setOnNavigationItemSelectedListener(item -> {
@@ -85,10 +84,9 @@ public class AdminActivity extends AppCompatActivity {
                 }
             }
             if (selectedId == null){
-                selectedId = MenuItemId.DASHBOARD_ADMIN;
+                selectedId = MenuItemId.USERS_ADMIN;
             }
             fragment = switch (selectedId) {
-                case DASHBOARD_ADMIN -> new DashboardAdminFragment();
                 case USERS_ADMIN ->  UsersAdminFragment.newInstance(token);
                 case MANAGEMENT_ADMIN ->  ManagementAdminFragment.newInstance(token);
                 case ACCOUNT_ADMIN -> AccountAdminFragment.newInstance(token);

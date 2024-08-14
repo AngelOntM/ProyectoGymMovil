@@ -25,6 +25,7 @@ import com.utt.gymbros.model.VisitUserModel;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -89,28 +90,55 @@ public class VisitUserAdminFragment extends Fragment {
     }
 
     private void setupDatePickers() {
-        // Configurar el DateRangePicker
         dateRangeInput.setOnClickListener(v -> {
             MaterialDatePicker.Builder<Pair<Long, Long>> builder = MaterialDatePicker.Builder.dateRangePicker();
             builder.setTitleText("Selecciona el rango de fechas");
-            builder.setSelection(Pair.create(MaterialDatePicker.todayInUtcMilliseconds(), MaterialDatePicker.todayInUtcMilliseconds()));
+
+            // Configurar la zona horaria a la de México
+            TimeZone timeZone = TimeZone.getTimeZone("America/Mexico_City");
+            Calendar calendar = Calendar.getInstance(timeZone);
+            long today = calendar.getTimeInMillis();
+
+            builder.setSelection(Pair.create(today, today));
             builder.setCalendarConstraints(new CalendarConstraints.Builder()
                     .setValidator(DateValidatorPointBackward.now()) // Permitir fechas pasadas
                     .build());
+
             MaterialDatePicker<Pair<Long, Long>> picker = builder.build();
 
             picker.addOnPositiveButtonClickListener(selection -> {
-                Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+                calendar.setTimeZone(timeZone);
 
-                // Formatear las fechas seleccionadas
+                // Obtener la fecha actual para compararla
+                String todayDate = apiFormat.format(calendar.getTime());
+
+                // Ajustar fecha de inicio
                 calendar.setTimeInMillis(selection.first);
-                startDate = apiFormat.format(calendar.getTime()); // Mantén el formato para la API
-                String startDateDisplay = displayFormat.format(calendar.getTime()); // Formato para mostrar
-                calendar.setTimeInMillis(selection.second);
-                endDate = apiFormat.format(calendar.getTime()); // Mantén el formato para la API
-                String endDateDisplay = displayFormat.format(calendar.getTime()); // Formato para mostrar
+                startDate = apiFormat.format(calendar.getTime());
+                String startDateDisplay = displayFormat.format(calendar.getTime());
 
-                // Si las fechas de inicio y fin son iguales, mostrar solo una fecha
+                // Ajustar fecha de fin
+                calendar.setTimeInMillis(selection.second);
+                endDate = apiFormat.format(calendar.getTime());
+                String endDateDisplay = displayFormat.format(calendar.getTime());
+
+                // Si la fecha de inicio no es hoy, sumar un día
+                if (!startDate.equals(todayDate)) {
+                    calendar.setTimeInMillis(selection.first);
+                    calendar.add(Calendar.DAY_OF_MONTH, 1);
+                    startDate = apiFormat.format(calendar.getTime());
+                    startDateDisplay = displayFormat.format(calendar.getTime());
+                }
+
+                // Si la fecha de fin no es hoy, sumar un día
+                if (!endDate.equals(todayDate)) {
+                    calendar.setTimeInMillis(selection.second);
+                    calendar.add(Calendar.DAY_OF_MONTH, 1);
+                    endDate = apiFormat.format(calendar.getTime());
+                    endDateDisplay = displayFormat.format(calendar.getTime());
+                }
+
+                // Mostrar las fechas seleccionadas
                 if (startDate.equals(endDate)) {
                     dateRangeInput.setText(startDateDisplay);
                 } else {
@@ -125,7 +153,7 @@ public class VisitUserAdminFragment extends Fragment {
         });
 
         // Inicializar las fechas con formato de visualización
-        Calendar now = Calendar.getInstance();
+        Calendar now = Calendar.getInstance(TimeZone.getTimeZone("America/Mexico_City"));
         startDate = apiFormat.format(now.getTime());
         endDate = apiFormat.format(now.getTime());
         dateRangeInput.setText(displayFormat.format(now.getTime()));
@@ -153,8 +181,14 @@ public class VisitUserAdminFragment extends Fragment {
             public void onResponse(Call<List<VisitUserModel.Visit>> call, Response<List<VisitUserModel.Visit>> response) {
                 if (response.isSuccessful()) {
                     visitList.clear();
-                    visitList.addAll(response.body());
-                    visitAdapter.notifyDataSetChanged();
+                    List<VisitUserModel.Visit> visits = response.body();
+
+                    // Invertir el orden de la lista
+                    if (visits != null) {
+                        Collections.reverse(visits);
+                        visitList.addAll(visits);
+                        visitAdapter.notifyDataSetChanged();
+                    }
 
                     if (snackbar != null && snackbar.isShown()) {
                         snackbar.dismiss();
@@ -173,6 +207,7 @@ public class VisitUserAdminFragment extends Fragment {
             }
         });
     }
+
 
     private void scheduleNextFetch() {
         handler.postDelayed(fetchTask, FETCH_INTERVAL_MS);

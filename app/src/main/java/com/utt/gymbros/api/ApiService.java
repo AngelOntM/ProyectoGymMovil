@@ -11,6 +11,7 @@ import com.utt.gymbros.model.VisitUserModel;
 
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
@@ -162,6 +163,9 @@ public interface ApiService {
 
     @GET("user")
     Call<UserModel.UserResponse> getUser(@Header("Authorization") String authToken);
+
+    @GET("users/image/{id}")
+    Call<ResponseBody> getUserImage(@Path("id") int userId, @Header("Authorization") String authToken);
 
     //endregion
 

@@ -156,38 +156,40 @@ public class OrderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         public void bind(OrderModel.Order order, int position) {
             orderIdTextView.setText("Folio: " + order.getId());
             orderDateTextView.setText("Fecha de Orden: " + order.getOrderDate());
-            orderStatusTextView.setText("Estado: " + order.getEstado());
+
+            String estado = order.getEstado();
+            orderStatusTextView.setText("Estado: " + estado);
             orderTotalTextView.setText("Total $" + order.getTotalAmount());
 
-            switch (order.getEstado()) {
+            // Cambiar el color del texto basado en el estado
+            switch (estado) {
                 case "Pagada":
-                    itemView.setBackgroundColor(Color.parseColor("#b8f397")); // Verde seleccionado
-                    setTextViewColors(Color.BLACK); // Textos en negro para contraste
+                    setTextViewColors(Color.WHITE, Color.GREEN); // "Estado" en blanco y "Pagada" en verde
                     btnCancelOrder.setVisibility(View.GONE); // Ocultar botón de cancelar orden
                     break;
                 case "Cancelada":
-                    itemView.setBackgroundColor(Color.parseColor("#ef4a72")); // Rojo seleccionado
-                    setTextViewColors(Color.WHITE); // Textos en blanco para contraste
+                    setTextViewColors(Color.WHITE, Color.RED); // "Estado" en blanco y "Cancelada" en rojo
                     btnCancelOrder.setVisibility(View.GONE); // Ocultar botón de cancelar orden
                     break;
                 case "Proceso":
-                    itemView.setBackgroundColor(Color.parseColor("#394457")); // Gris seleccionado
-                    setTextViewColors(Color.WHITE); // Textos en blanco para contraste
+                    setTextViewColors(Color.WHITE, Color.YELLOW); // "Estado" en blanco y "Proceso" en amarillo
                     btnCancelOrder.setVisibility(View.VISIBLE); // Mostrar botón de cancelar orden
                     break;
                 default:
-                    itemView.setBackgroundColor(Color.WHITE); // Color por defecto
-                    setTextViewColors(Color.BLACK); // Textos en negro para contraste
+                    setTextViewColors(Color.WHITE, Color.BLACK); // Textos en blanco para "Estado" y negro para otros estados
                     btnCancelOrder.setVisibility(View.GONE); // Ocultar botón de cancelar orden
                     break;
             }
         }
 
-        private void setTextViewColors(int color) {
-            orderIdTextView.setTextColor(color);
-            orderDateTextView.setTextColor(color);
-            orderStatusTextView.setTextColor(color);
-            orderTotalTextView.setTextColor(color);
+        private void setTextViewColors(int labelColor, int stateColor) {
+            // Establecer el color de "Estado:"
+            orderIdTextView.setTextColor(labelColor);
+            orderDateTextView.setTextColor(labelColor);
+            orderTotalTextView.setTextColor(labelColor);
+
+            // Establecer el color del estado específico
+            orderStatusTextView.setTextColor(stateColor);
         }
     }
 
@@ -197,4 +199,3 @@ public class OrderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         }
     }
 }
-

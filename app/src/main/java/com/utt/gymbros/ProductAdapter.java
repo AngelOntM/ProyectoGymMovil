@@ -69,10 +69,12 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             holder.activeStatus.setTextColor(Color.RED);
         }
 
+        String baseUrl = "https://pasameporfavor.site/storage/";
+
         if (product.getProductImagePath().isEmpty()) {
             holder.image.setImageResource(R.drawable.ic_placeholder);
         } else {
-            Picasso.get().load(product.getProductImagePath()).into(holder.image);
+            Picasso.get().load(baseUrl + product.getProductImagePath()).into(holder.image);
         }
 
         holder.itemView.setOnClickListener(v -> {

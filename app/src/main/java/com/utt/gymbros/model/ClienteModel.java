@@ -66,4 +66,8 @@ public class ClienteModel {
         // Setter
         public void setClientes(List<Cliente> clientes) { this.clientes = clientes; }
     }
+
+    public static class getImageUser{
+
+    }
 }

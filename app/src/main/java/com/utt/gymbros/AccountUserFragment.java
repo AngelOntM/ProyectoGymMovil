@@ -31,6 +31,8 @@ import com.utt.gymbros.model.AuthModel;
 import com.utt.gymbros.model.UserModel;
 import com.utt.gymbros.model.MembershipModel;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.time.LocalDate;
@@ -39,6 +41,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -145,7 +148,6 @@ public class AccountUserFragment extends Fragment {
         // Fetch user data
         if (getArguments() != null) {
             String token = getArguments().getString(ARG_TOKEN);
-
             fetchUserData(token, profileImage, profileName, profileEmail, profileRole, profileBirthday, profileMembershipStatus);
         }
 
@@ -268,7 +270,7 @@ public class AccountUserFragment extends Fragment {
                                 LocalDate startDate = LocalDateTime.parse(activeMembership.getStartDate(), formatter).toLocalDate();
                                 LocalDate endDate = LocalDateTime.parse(activeMembership.getEndDate(), formatter).toLocalDate();
 
-                                long daysRemaining = ChronoUnit.DAYS.between(startDate, endDate);
+                                long daysRemaining = ChronoUnit.DAYS.between(LocalDate.now(), endDate);
 
                                 profileMembershipStatus.setTextColor(getResources().getColor(R.color.white_light));
                                 profileMembershipStatus.setText("Días Restantes: ");
@@ -283,12 +285,36 @@ public class AccountUserFragment extends Fragment {
                             profileMembershipStatus.setText("Estado de Membresía: No tiene membresía activa");
                         }
 
-                        // Mostrar la imagen de perfil si existe
-                        if (user.getFaceImagePath() != null) {
-                            Picasso.get().load(user.getFaceImagePath()).into(profileImage);
-                        } else {
-                            profileImage.setImageResource(R.drawable.profile_placeholder);
-                        }
+                        // Hacer peticion a la API para obtener la imagen del cliente
+                        Call<ResponseBody> callImage = apiService.getUserImage(user.getId(), "Bearer " + token);
+                        callImage.enqueue(new Callback<ResponseBody>() {
+                            @Override
+                            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                                if (response.isSuccessful()) {
+                                    try {
+                                        // Crear archivo temporal
+                                        File tempFile = File.createTempFile("temp_image", ".jpg", requireContext().getCacheDir());
+                                        FileOutputStream fos = new FileOutputStream(tempFile);
+                                        fos.write(response.body().bytes());
+                                        fos.flush();
+                                        fos.close();
+
+                                        // Cargar imagen desde el archivo temporal usando Picasso
+                                        Picasso.get()
+                                                .load(tempFile)
+                                                .placeholder(R.drawable.profile_placeholder)
+                                                .into(profileImage);
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                                t.printStackTrace();
+                            }
+                        });
                     } else {
                         Snackbar.make(getView(), "Respuesta vacía de la API", Snackbar.LENGTH_LONG)
                                 .setAction("Action", null).show();

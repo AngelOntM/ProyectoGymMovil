@@ -3,12 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
 
-    <item
-        android:id="@+id/nav_dashboard_admin"
-        android:enabled="true"
-        android:icon="@drawable/dashboard_icon"
-        android:title="Dashboard"
-        tools:ignore="HardcodedText" />
+
     <item
         android:id="@+id/nav_users_admin"
         android:enabled="true"

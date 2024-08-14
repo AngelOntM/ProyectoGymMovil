@@ -5,7 +5,6 @@
     android:id="@+id/item_buy_membership"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-
     android:layout_margin="8dp"
     app:cardCornerRadius="8dp"
     app:cardElevation="4dp">
@@ -16,11 +15,11 @@
         android:orientation="vertical"
         android:padding="16dp">
 
+        <!-- Imagen con medidas específicas y ajuste de escala -->
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/image_membership"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="200dp"
             android:scaleType="centerCrop"
             android:background="@color/black_light"
             android:src="@drawable/ic_placeholder"

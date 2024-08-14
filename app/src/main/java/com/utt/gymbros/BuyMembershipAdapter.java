@@ -64,40 +64,65 @@ public class BuyMembershipAdapter extends RecyclerView.Adapter<BuyMembershipAdap
 
     @Override
     public void onBindViewHolder(@NonNull MembershipViewHolder holder, int position) {
+        // Inicializar el diálogo de progreso
         progressDialog = new MaterialAlertDialogBuilder(context)
                 .setView(R.layout.progress_dialog_waiting)
                 .setCancelable(false)
                 .create();
 
+        // Obtener el objeto Membership de la lista
         MembershipModel.Membership membership = membershipList.get(position);
+
+        // Configurar los datos en las vistas
         holder.title.setText(membership.getProductName());
         holder.description.setText(membership.getDescription());
         holder.price.setText("Precio: $" + membership.getPrice());
 
-        if (membership.getProductImagePath().isEmpty()) {
+        // Concatenar la URL base con el path de la imagen
+        String baseUrl = "https://pasameporfavor.site/storage/";
+        String imagePath = membership.getProductImagePath();
+
+        // Usar Picasso para cargar la imagen
+        if (imagePath.isEmpty()) {
+            // Establecer un drawable de marcador de posición si no hay URL de imagen
             holder.image.setImageResource(R.drawable.ic_placeholder);
         } else {
-            Picasso.get().load(membership.getProductImagePath()).into(holder.image);
+            // Usar Picasso para cargar y ajustar la imagen
+            Picasso.get()
+                    .load(baseUrl + imagePath)
+                    .into(holder.image);
         }
 
+        // Configurar el botón de compra
         holder.buyButton.setOnClickListener(v -> {
+            // Mostrar el diálogo de progreso
             progressDialog.show();
+
+            // Obtener datos del usuario
             getUserId();
             getAuthToken();
             getUserEmail();
             getUserName();
             int membershipId = membership.getId();
 
+            // Verificar que se hayan obtenido todos los datos necesarios
             if (USER_ID != null && !AUTH_TOKEN.isEmpty() && !USER_EMAIL.isEmpty() && !USER_NAME.isEmpty()) {
+                // Crear la solicitud de compra de membresía
                 BuyMembershipRequest request = new BuyMembershipRequest(USER_ID, membershipId);
-                String membershipDescription = "Compra de Membresía: "+membership.getProductName() + " - " + USER_NAME +" - ID:"+ USER_ID;
+                String membershipDescription = "Compra de Membresía: " + membership.getProductName() + " - " + USER_NAME + " - ID:" + USER_ID;
+
+                // Realizar la solicitud de compra de membresía
                 makeBuyMembershipRequest(request, AUTH_TOKEN, holder.itemView, membershipDescription);
             } else {
+                // Mostrar mensaje de error si no se obtuvieron todos los datos necesarios
                 Snackbar.make(v, "Error al obtener datos del usuario.", Snackbar.LENGTH_LONG).show();
                 progressDialog.dismiss();
             }
         });
     }
+
+
+
 
     @Override
     public int getItemCount() {

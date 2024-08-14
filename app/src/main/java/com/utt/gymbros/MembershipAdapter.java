@@ -66,10 +66,12 @@ public class MembershipAdapter extends RecyclerView.Adapter<MembershipAdapter.Me
 
         holder.price.setText(membership.getPrice());
 
+        String baseUrl = "https://pasameporfavor.site/storage/";
+
         if (membership.getProductImagePath().isEmpty()) {
             holder.image.setImageResource(R.drawable.ic_placeholder);
         } else {
-            Picasso.get().load(membership.getProductImagePath()).into(holder.image);
+            Picasso.get().load(baseUrl + membership.getProductImagePath()).into(holder.image);
         }
 
         holder.itemView.setOnClickListener(v -> {
