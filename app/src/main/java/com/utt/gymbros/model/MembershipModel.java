@@ -113,6 +113,33 @@ public class MembershipModel {
         }
     }
 
+    public static class EditMembershipRequest {
+        @SerializedName("product_name")
+        private String product_name;
+        @SerializedName("description")
+        private String description;
+        @SerializedName("price")
+        private String price;
+        @SerializedName("discount")
+        private String discount;
+        @SerializedName("duration_days")
+        private int duration_days;
+        @SerializedName("size")
+        private int size;
+        @SerializedName("active")
+        private boolean active; // Cambiado de int a boolean
+
+        public EditMembershipRequest(String product_name, String description, String price, String discount, int duration_days, int size, boolean active) {
+            this.product_name = product_name;
+            this.description = description;
+            this.price = price;
+            this.discount = discount;
+            this.duration_days = duration_days;
+            this.size = size;
+            this.active = active;
+        }
+    }
+
     public static class RedeemMembershipCodeRequest {
         @SerializedName("code")
         private String code;

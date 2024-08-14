@@ -177,4 +177,31 @@ public class ProductModel {
             this.active = active;
         }
     }
+
+    public static class EditProductRequest {
+        @SerializedName("product_name")
+        private String productName;
+        @SerializedName("description")
+        private String description;
+        @SerializedName("price")
+        private String price;
+        @SerializedName("stock")
+        private int stock;
+        @SerializedName("discount")
+        private String discount;
+        @SerializedName("category_id")
+        private int categoryId;
+        @SerializedName("active")
+        private boolean active; // Cambiado a boolean
+
+        public EditProductRequest(String productName, String description, String price, int stock, String discount, int categoryId, boolean active) {
+            this.productName = productName;
+            this.description = description;
+            this.price = price;
+            this.stock = stock;
+            this.discount = discount;
+            this.categoryId = categoryId;
+            this.active = active;
+        }
+    }
 }

@@ -32,7 +32,7 @@ public class CheckoutActivity extends AppCompatActivity {
 
     private PaymentSheet paymentSheet;
     private androidx.appcompat.app.AlertDialog progressDialog;
-
+    private androidx.appcompat.app.AlertDialog progressDialogSendCodes;
     private final String STRIPE_PUBLISHABLE_KEY = "pk_test_51Pc08PLTqA9tmmllvh1GBkYunBiAFmNi8AF0bmEyKAAyhcKBrv1YJFpNfOAX7Tr6Ky0VqODPDlVsoaemqIOMRrrn00xMiBhNCh";
     private String AUTH_TOKEN;
     private String paymentIntentId;
@@ -48,6 +48,11 @@ public class CheckoutActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        progressDialogSendCodes = new MaterialAlertDialogBuilder(this)
+                .setView(R.layout.progress_dialog_send_codes)
+                .setCancelable(false)
+                .create();
 
         getAuthToken();
 
@@ -78,7 +83,66 @@ public class CheckoutActivity extends AppCompatActivity {
     }
 
     private void onPaymentSheetResult(final PaymentSheetResult paymentSheetResult) {
-        if (paymentSheetResult instanceof PaymentSheetResult.Canceled) {
+        if (paymentSheetResult instanceof PaymentSheetResult.Completed) {
+            Log.d("CheckoutActivity", "Payment completed successfully");
+            showProgressDialog();
+
+            PaymentsModel.confirmPaymentIntentRequest request = new PaymentsModel.confirmPaymentIntentRequest(paymentIntentId);
+            ApiService apiService = ApiClient.getInstance().create(ApiService.class);
+
+            apiService.confirmStripePayment(request, "Bearer " + AUTH_TOKEN).enqueue(new Callback<Void>() {
+                @Override
+                public void onResponse(Call<Void> call, Response<Void> response) {
+                    if (response.isSuccessful()) {
+                        apiService.stripePayment(orderId, new PaymentsModel.storePaymentRequest(paymentIntentId), "Bearer " + AUTH_TOKEN).enqueue(new Callback<Void>() {
+                            @Override
+                            public void onResponse(Call<Void> call, Response<Void> response) {
+                                if (response.isSuccessful()) {
+                                    Log.d("CheckoutActivity", "Payment confirmed successfully");
+
+                                    // Mostrar el diálogo de "Enviando códigos"
+                                    progressDialogSendCodes.show();
+
+                                    // Esperar 3 segundos antes de ocultar el diálogo y finalizar
+                                    new android.os.Handler().postDelayed(
+                                            new Runnable() {
+                                                public void run() {
+                                                    progressDialogSendCodes.dismiss(); // Ocultar el diálogo
+                                                    hideProgressDialog(); // Ocultar el progreso general
+                                                    finish(); // Finalizar la actividad
+                                                }
+                                            },
+                                            3000
+                                    );
+                                } else {
+                                    Log.e("CheckoutActivity", "Error storing payment: " + response.errorBody());
+                                    finish();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<Void> call, Throwable t) {
+                                hideProgressDialog();
+                                Log.e("CheckoutActivity", "Error onFailure storing payment: " + t.getMessage());
+                                finish();
+                            }
+                        });
+                    } else {
+                        Log.e("CheckoutActivity", "Error confirming payment: " + response.errorBody());
+                        finish();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Void> call, Throwable t) {
+                    hideProgressDialog();
+                    Log.e("CheckoutActivity", "Error onFailure confirming payment: " + t.getMessage());
+                    finish();
+                }
+            });
+        } else if (paymentSheetResult instanceof PaymentSheetResult.Failed) {
+            Log.e("CheckoutActivity", "Payment failed: ", ((PaymentSheetResult.Failed) paymentSheetResult).getError());
+        } else if (paymentSheetResult instanceof PaymentSheetResult.Canceled) {
             showProgressDialog();
             PaymentsModel.cancelPaymentIntentRequest request = new PaymentsModel.cancelPaymentIntentRequest(paymentIntentId);
             ApiService apiService = ApiClient.getInstance().create(ApiService.class);
@@ -92,55 +156,22 @@ public class CheckoutActivity extends AppCompatActivity {
                     } else {
                         Log.e("CheckoutActivity", "Error canceling payment: " + response.errorBody());
                         //Regresar en la pantalla anterior un snackbar con el error
-                        finish();
+                        Snackbar.make(findViewById(R.id.checkout_activity), "Error cancelando el pago", Snackbar.LENGTH_LONG).show();
+                        //Despues de 3 segundos
+                        new android.os.Handler().postDelayed(
+                                new Runnable() {
+                                    public void run() {
+                                        finish();
+                                    }
+                                },
+                                3000);
                     }
                 }
+
                 @Override
                 public void onFailure(Call<Void> call, Throwable t) {
                     hideProgressDialog();
                     Log.e("CheckoutActivity", "Error onFailure canceling payment: " + t.getMessage());
-                    finish();
-                }
-            });
-        } else if (paymentSheetResult instanceof PaymentSheetResult.Failed) {
-            Log.e("CheckoutActivity", "Payment failed: ", ((PaymentSheetResult.Failed) paymentSheetResult).getError());
-        } else if (paymentSheetResult instanceof PaymentSheetResult.Completed) {
-            Log.d("CheckoutActivity", "Payment completed successfully");
-            showProgressDialog();
-            PaymentsModel.confirmPaymentIntentRequest request = new PaymentsModel.confirmPaymentIntentRequest(paymentIntentId);
-            ApiService apiService = ApiClient.getInstance().create(ApiService.class);
-            apiService.confirmStripePayment(request, "Bearer " + AUTH_TOKEN).enqueue(new Callback<Void>() {
-                @Override
-                public void onResponse(Call<Void> call, Response<Void> response) {
-                    if (response.isSuccessful()) {
-                        apiService.stripePayment(orderId, new PaymentsModel.storePaymentRequest(paymentIntentId), "Bearer " + AUTH_TOKEN).enqueue(new Callback<Void>() {
-                            @Override
-                            public void onResponse(Call<Void> call, Response<Void> response) {
-                                hideProgressDialog();
-                                if (response.isSuccessful()) {
-                                    Log.d("CheckoutActivity", "Payment confirmed successfully");
-                                    finish();
-                                } else {
-                                    Log.e("CheckoutActivity", "Error storing payment: " + response.errorBody());
-                                    finish();
-                                }
-                            }
-                            @Override
-                            public void onFailure(Call<Void> call, Throwable t) {
-                                hideProgressDialog();
-                                Log.e("CheckoutActivity", "Error onFailure storing payment: " + t.getMessage());
-                                finish();
-                            }
-                        });
-                    } else {
-                        Log.e("CheckoutActivity", "Error confirming payment: " + response.errorBody());
-                        finish();
-                    }
-                }
-                @Override
-                public void onFailure(Call<Void> call, Throwable t) {
-                    hideProgressDialog();
-                    Log.e("CheckoutActivity", "Error onFailure confirming payment: " + t.getMessage());
                     finish();
                 }
             });

@@ -146,16 +146,14 @@ public class FullscreenDialogEditMembership extends AppCompatDialogFragment {
 
         Call<Void> call = apiService.updateMembership(
                 membership.getId(),
-                new MembershipModel.Membership(
-                        membership.getId(),
+                new MembershipModel.EditMembershipRequest(
                         membership.getProductName(),
                         membership.getDescription(),
                         membership.getPrice(),
                         membership.getDiscount(),
-                        membership.isActive(),  // Aquí también se usa isActive() en lugar de getActive()
-                        membership.getProductImagePath(),
                         membership.getDurationDays(),
-                        membership.getSize()
+                        membership.getSize(),
+                        membership.isActive()
                 ),
                 getToken()
         );

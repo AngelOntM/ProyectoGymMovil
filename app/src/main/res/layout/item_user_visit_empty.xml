@@ -1,0 +1,16 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/text_no_orders"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No hay visitas registradas"
+        android:fontFamily="@font/league_spartan"
+        android:textColor="@color/white_light"
+        android:textSize="20dp"
+        android:layout_centerInParent="true"/>
+
+</RelativeLayout>

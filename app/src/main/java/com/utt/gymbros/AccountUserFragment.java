@@ -282,7 +282,7 @@ public class AccountUserFragment extends Fragment {
                             }
                         } else {
                             profileMembershipStatus.setTextColor(Color.parseColor("#e24c5e"));
-                            profileMembershipStatus.setText("Estado de Membresía: No tiene membresía activa");
+                            profileMembershipStatus.setText("No tiene membresía activa");
                         }
 
                         // Hacer peticion a la API para obtener la imagen del cliente
@@ -394,7 +394,7 @@ public class AccountUserFragment extends Fragment {
                 if (response.isSuccessful()) {
                     AuthModel.changePasswordResponse changePasswordResponse = response.body();
                     if (changePasswordResponse != null) {
-                        Snackbar.make(getView(), "Contraseña cambiada con éxito: " + changePasswordResponse.getMessage(), Snackbar.LENGTH_LONG)
+                        Snackbar.make(getView(), "Contraseña cambiada con éxito", Snackbar.LENGTH_LONG)
                                 .setAction("Action", null).show();
                         dialog.dismiss(); // Cierra el diálogo al cambiar la contraseña con éxito
                     } else {

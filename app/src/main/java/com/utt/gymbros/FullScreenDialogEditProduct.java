@@ -47,6 +47,7 @@ public class FullScreenDialogEditProduct extends AppCompatDialogFragment {
         TextInputEditText descriptionEditText = dialogView.findViewById(R.id.descriptionEditText);
         TextInputEditText priceEditText = dialogView.findViewById(R.id.priceEditText);
         TextInputEditText discountEditText = dialogView.findViewById(R.id.discountEditText);
+        TextInputEditText stockEditText = dialogView.findViewById(R.id.stockEditText);
         MaterialButton cancelButton = dialogView.findViewById(R.id.cancelButton);
         MaterialButton saveButton = dialogView.findViewById(R.id.saveButton);
         progressBar = dialogView.findViewById(R.id.progressBar);
@@ -61,6 +62,7 @@ public class FullScreenDialogEditProduct extends AppCompatDialogFragment {
                 descriptionEditText.setText(product.getDescription());
                 priceEditText.setText(product.getPrice());
                 discountEditText.setText(product.getDiscount());
+                stockEditText.setText(String.valueOf(product.getStock()));
             }
         }
 
@@ -75,12 +77,14 @@ public class FullScreenDialogEditProduct extends AppCompatDialogFragment {
                 String description = descriptionEditText.getText().toString();
                 String price = priceEditText.getText().toString();
                 String discount = discountEditText.getText().toString();
+                Integer stock = Integer.parseInt(stockEditText.getText().toString());
 
                 // Actualizar el modelo de producto
                 product.setProductName(productName);
                 product.setDescription(description);
                 product.setPrice(price);
                 product.setDiscount(discount);
+                product.setStock(stock);
 
                 // Hacer la petición para actualizar el producto
                 updateProduct(product, dialogView);
@@ -125,19 +129,14 @@ public class FullScreenDialogEditProduct extends AppCompatDialogFragment {
 
         Call<Void> call = apiService.updateProduct(
                 product.getId(),
-                new ProductModel.Product(
-                        product.getId(),
+                new ProductModel.EditProductRequest(
                         product.getProductName(),
                         product.getDescription(),
                         product.getPrice(),
                         product.getStock(),
                         product.getDiscount(),
-                        product.isActive(),
                         product.getCategoryId(),
-                        product.getCategoryName(),
-                        product.getProductImagePath(),
-                        product.getCreatedAt(),
-                        product.getUpdatedAt()
+                        product.isActive()
                 ),
                 getToken()
         );
@@ -147,9 +146,13 @@ public class FullScreenDialogEditProduct extends AppCompatDialogFragment {
             public void onResponse(Call<Void> call, Response<Void> response) {
                 progressBar.setVisibility(View.GONE);
                 if (response.isSuccessful()) {
+
+                    Snackbar.make(dialogView, "Producto actualizado", Snackbar.LENGTH_LONG).show();
                     dismiss();
                 } else {
                     Snackbar.make(dialogView, "Error al actualizar producto", Snackbar.LENGTH_LONG).show();
+                    //IMprimir el porque fallo
+                    System.out.println(response.errorBody());
                 }
             }
 

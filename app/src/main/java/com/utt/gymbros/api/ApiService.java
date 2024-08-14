@@ -7,6 +7,7 @@ import com.utt.gymbros.model.OrderModel;
 import com.utt.gymbros.model.PaymentsModel;
 import com.utt.gymbros.model.ProductModel;
 import com.utt.gymbros.model.UserModel;
+import com.utt.gymbros.model.UserVisitModel;
 import com.utt.gymbros.model.VisitUserModel;
 
 import java.util.List;
@@ -50,10 +51,10 @@ public interface ApiService {
             @Header("Authorization") String authToken
     );
 
-    @PUT("membresias/{id}")
+    @POST("membresias/{id}")
     Call<Void> updateMembership(
             @Path("id") int membershipId,
-            @Body MembershipModel.Membership membership,
+            @Body MembershipModel.EditMembershipRequest membership,
             @Header("Authorization") String authToken
     );
 
@@ -108,10 +109,10 @@ public interface ApiService {
     @GET("productos/all")
     Call<List<ProductModel.Product>> getProducts(@Header("Authorization") String authToken);
 
-    @PUT("productos/{id}")
+    @POST("productos/{id}")
     Call<Void> updateProduct(
             @Path("id") int productId,
-            @Body ProductModel.Product product,
+            @Body ProductModel.EditProductRequest product,
             @Header("Authorization") String authToken
     );
 
@@ -177,4 +178,8 @@ public interface ApiService {
     Call<OrderModel.OrderUserDetailResponse> getOrderDetailUser(@Path("id") int orderId, @Header("Authorization") String authToken);
 
     //endregion
+
+    //region Visitas - Usuario
+    @GET("user/visits")
+    Call<List<UserVisitModel.Visit>> getUserVisits(@Header("Authorization") String authToken);
 }

@@ -278,7 +278,7 @@ public class AccountAdminFragment extends Fragment {
                 if (response.isSuccessful()) {
                     AuthModel.changePasswordResponse changePasswordResponse = response.body();
                     if (changePasswordResponse != null) {
-                        Snackbar.make(getView(), "Contraseña cambiada con éxito: " + changePasswordResponse.getMessage(), Snackbar.LENGTH_LONG)
+                        Snackbar.make(getView(), "Contraseña cambiada con éxito", Snackbar.LENGTH_LONG)
                                 .setAction("Action", null).show();
                         dialog.dismiss(); // Cierra el diálogo al cambiar la contraseña con éxito
                     } else {

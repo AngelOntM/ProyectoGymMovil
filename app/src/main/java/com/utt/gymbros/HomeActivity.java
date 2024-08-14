@@ -57,7 +57,6 @@ public class HomeActivity extends AppCompatActivity {
         enum MenuItemId{
             START_USER(R.id.nav_start_user),
             MEMBERSHIPS_USER(R.id.nav_membership_user),
-            WORKOUTS_USER(R.id.nav_workouts_user),
             ACCOUNT_USER(R.id.nav_account_user);
 
             private final int id;
@@ -74,7 +73,7 @@ public class HomeActivity extends AppCompatActivity {
         // Initial fragment setup
         if (savedInstanceState == null) {  // Avoid fragment recreation on configuration change
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.home_main_activity, new StartUserFragment())
+                    .replace(R.id.home_main_activity, StartUserFragment.newInstance(token))
                     .commit();
             navigationView.setSelectedItemId(R.id.nav_start_user);
         }
@@ -92,9 +91,8 @@ public class HomeActivity extends AppCompatActivity {
                 selectedItemId = MenuItemId.START_USER;
             }
             fragment = switch (selectedItemId) {
-                case START_USER -> new StartUserFragment();
+                case START_USER -> StartUserFragment.newInstance(token);
                 case MEMBERSHIPS_USER ->  MembershipsUserFragment.newInstance(token);
-                case WORKOUTS_USER -> new WorkoutsUserFragment();
                 case ACCOUNT_USER -> AccountUserFragment.newInstance(token);
             };
             getSupportFragmentManager().beginTransaction()

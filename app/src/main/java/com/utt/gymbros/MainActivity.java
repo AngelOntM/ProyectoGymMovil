@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputFilter;
 import android.text.InputType;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -49,6 +50,9 @@ public class MainActivity extends AppCompatActivity {
         Button btnContrasenaOlvidada = findViewById(R.id.btnContrasenaOlvidada);
         EditText etCorreo = findViewById(R.id.etCorreo);
         EditText etContrasena = findViewById(R.id.etContrasena);
+
+        //Oculta el boton de olvidar contraseña
+        btnContrasenaOlvidada.setVisibility(View.GONE);
 
         //Validar si ya hay un token guardado en EncryptedSharedPreference
         SharedPreferences sharedPreferences = null;
